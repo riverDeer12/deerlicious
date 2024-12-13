@@ -1,15 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Deerlicious.API.Database.Entities;
 
-public class Role
+public class Role : BaseEntity
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Key]
-    public Guid RoleId { get; set; }
-    public required string Name { get; set; }
-    public required string Description { get; set; }
+    public string Name { get; set; }
     
-    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public string Description { get; set; }
+    
+    public ICollection<UserRole> Users { get; set; } = new List<UserRole>();
 }

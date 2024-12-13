@@ -17,11 +17,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.HasKey(e => e.UserId);
+        builder.HasKey(e => e.Id);
         builder.Property(e => e.UserName).HasMaxLength(200);
         builder.Property(e => e.Email).HasMaxLength(200);
         builder.Property(e => e.Password).HasMaxLength(200);
-        builder.HasMany(u => u.UserRoles);
+        builder.HasMany(u => u.Roles);
 
         var salt = _passwordService.GenerateSalt();
 

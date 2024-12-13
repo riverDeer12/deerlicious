@@ -1,8 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Deerlicious.API.Database.Entities;
 
 public abstract class BaseEntity
 {
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public Guid Id { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
     public Guid UpdatedBy { get; set; }

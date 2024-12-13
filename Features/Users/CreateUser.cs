@@ -6,16 +6,8 @@ using FastEndpoints;
 
 namespace Deerlicious.API.Features.Users;
 
-public record CreateUserRequest(
-    string Username, 
-    string Password,
-    string Email);
-
-public class CreateUserResponse
-{
-    public required Guid Id { get; set; }
-    public required string Username { get; set; }
-}
+public sealed record CreateUserRequest(string Username, string Password, string Email);
+public sealed record CreateUserResponse(Guid Id, string Username);
 
 public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserResponse>
 {
@@ -37,7 +29,6 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
     public override async Task HandleAsync(CreateUserRequest request, CancellationToken c)
     {
-
         var salt = _passwordService.GenerateSalt();
         
         var user = new User
@@ -55,10 +46,6 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
         if (result is not 1)
             ThrowError(ValidationMessages.SavingError);
 
-        await SendAsync(new CreateUserResponse
-        {
-            Id = user.UserId,
-            Username = user.UserName
-        }, cancellation: c);
+        await SendAsync(new (user.Id, user.UserName), cancellation: c);
     }
 }
