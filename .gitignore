@@ -159,3 +159,6 @@
 /.idea/.idea.Deerlicious/.idea/vcs.xml
 /.idea/.idea.Deerlicious/.idea/projectSettingsUpdater.xml
 /.idea/.idea.Deerlicious/.idea/workspace.xml
+/obj/Debug/net8.0/apphost
+/bin/Debug/net8.0/Deerlicious.API
+/obj/rider.project.model.nuget.info
