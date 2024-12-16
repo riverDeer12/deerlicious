@@ -48,15 +48,10 @@ public class DeerliciousContext : DbContext
                     entity.CreatedAt = DateTimeOffset.Now;
                     entity.CreatedBy = _currentUserService.UserId;
                     break;
-                case EntityState.Deleted:
-                    entity.DeletedAt = DateTimeOffset.Now;
-                    entity.IsDeleted = true;
-                    break;
                 case EntityState.Detached:
-                    break;
                 case EntityState.Unchanged:
-                    break;
                 case EntityState.Modified:
+                case EntityState.Deleted:
                     break;
                 default:
                     throw new Exception(ValidationMessages.SavingError);

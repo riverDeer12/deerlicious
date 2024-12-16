@@ -38,11 +38,11 @@ public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
         user.DeletedAt = DateTimeOffset.Now;
         
         _context.Users.Update(user);
+        
         var result = await _context.SaveChangesAsync(ct);
         
         if(result is not 1)
             ThrowError(ValidationMessages.SavingError);
-        
 
         await SendAsync(new DeleteUserResponse(user.Id, user.UserName), cancellation: ct);
     }
