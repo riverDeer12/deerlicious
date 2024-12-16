@@ -26,7 +26,7 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUsersRespo
     {
         var users = await _context.Users.ToListAsync(ct);
 
-        if (users.Count == 0)
+        if (users.Count is 0)
             await SendAsync(new List<GetUsersResponse>(), cancellation: ct);
 
         await SendAsync(users.Select(x => 

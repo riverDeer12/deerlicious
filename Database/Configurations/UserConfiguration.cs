@@ -8,13 +8,6 @@ namespace Deerlicious.API.Database.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    private readonly IPasswordService _passwordService;
-
-    public UserConfiguration(IPasswordService passwordService)
-    {
-        _passwordService = passwordService;
-    }
-
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(e => e.Id);
@@ -22,17 +15,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email).HasMaxLength(200);
         builder.Property(e => e.Password).HasMaxLength(200);
         builder.HasMany(u => u.Roles);
-
-        var salt = _passwordService.GenerateSalt();
-
-        builder.HasData(new User
-        {
-            Email = SeedData.SuperAdminEmail,
-            UserName = SeedData.SuperAdminUserName,
-            Salt = salt,
-            Password = _passwordService
-                .HashPasswordWithSalt(SeedData.SuperAdminPassword, salt),
-            EmailConfirmed = true
-        });
     }
 }

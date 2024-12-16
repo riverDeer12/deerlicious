@@ -13,13 +13,11 @@ public sealed record LoginResponse(string Token);
 public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
     private readonly DeerliciousContext _context;
-    private readonly IPasswordService _passwordService;
     private readonly IConfiguration _configuration;
 
-    public LoginEndpoint(DeerliciousContext context, IPasswordService passwordService, IConfiguration configuration)
+    public LoginEndpoint(DeerliciousContext context, IConfiguration configuration)
     {
         _context = context;
-        _passwordService = passwordService;
         _configuration = configuration;
     }
 
@@ -39,9 +37,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         if(user is null)
             ThrowError(ValidationMessages.NotFound);
 
-        var validPassword = _passwordService.CompareHashes(request.Password, user.Password);
-        
-        if(!validPassword)
+        if(!user.IsValidPassword(request.Password))
             ThrowError(ValidationMessages.WrongUserNameOrPassword);
         
         var jwtToken = JwtBearer.CreateToken(

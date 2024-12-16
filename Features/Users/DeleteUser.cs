@@ -32,11 +32,9 @@ public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
 
         if (user == null)
             ThrowError(ValidationMessages.NotFound);
+        
+        user.Delete();
 
-        user.IsDeleted = true;
-        
-        user.DeletedAt = DateTimeOffset.Now;
-        
         _context.Users.Update(user);
         
         var result = await _context.SaveChangesAsync(ct);

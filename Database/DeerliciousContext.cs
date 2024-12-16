@@ -9,21 +9,23 @@ namespace Deerlicious.API.Database;
 public class DeerliciousContext : DbContext
 {
     private readonly ICurrentUserService _currentUserService;
-    
+
     public DeerliciousContext(DbContextOptions<DeerliciousContext> options, ICurrentUserService currentUserService)
         : base(options)
     {
         _currentUserService = currentUserService;
     }
-    
+
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserRoleConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
 
         base.OnModelCreating(modelBuilder);
@@ -33,8 +35,10 @@ public class DeerliciousContext : DbContext
     {
         var entries = ChangeTracker
             .Entries()
-            .Where(e => e is { Entity: BaseEntity, State: EntityState.Added or 
-                EntityState.Modified or 
+            .Where(e => e is
+            {
+                Entity: BaseEntity, State: EntityState.Added or
+                EntityState.Modified or
                 EntityState.Deleted
             });
 
