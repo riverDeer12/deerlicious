@@ -1,6 +1,4 @@
-using Deerlicious.API.Constants;
 using Deerlicious.API.Database.Entities;
-using Deerlicious.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,6 +12,18 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.UserName).HasMaxLength(200);
         builder.Property(e => e.Email).HasMaxLength(200);
         builder.Property(e => e.Password).HasMaxLength(200);
+        
         builder.HasMany(u => u.Roles);
+
+        builder
+            .HasOne(a => a.Administrator)
+            .WithOne(b => b.User)
+            .HasForeignKey<Administrator>(b => b.UserId);
+        
+        builder
+            .HasOne(a => a.Contributor)
+            .WithOne(b => b.User)
+            .HasForeignKey<Contributor>(b => b.UserId);
     }
+    
 }

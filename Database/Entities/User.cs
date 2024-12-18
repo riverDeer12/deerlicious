@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-using Deerlicious.API.Services;
 
 namespace Deerlicious.API.Database.Entities;
 
@@ -11,6 +10,10 @@ public class User : BaseEntity
     public required string Password { get; set; }
     public bool EmailConfirmed { get; set; }
     public ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
+    
+    public Administrator Administrator { get; set; } = null!;
+
+    public Contributor Contributor { get; set; } = null!;
 
     public static User Create(string username, string password, string email)
         => new()
