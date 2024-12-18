@@ -2,6 +2,7 @@ using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
 using FastEndpoints;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Contributors;
@@ -44,5 +45,14 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
 
         await SendAsync(new CreateContributorResponse(newContributor.Id, newContributor.FullName),
             cancellation: ct);
+    }
+}
+
+public sealed class CreateContributorRequestValidator : AbstractValidator<CreateContributorRequest>
+{
+    public CreateContributorRequestValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty();
+        RuleFor(x => x.LastName).NotEmpty();
     }
 }

@@ -1,7 +1,7 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
-using Deerlicious.API.Services;
 using FastEndpoints;
+using FluentValidation;
 
 namespace Deerlicious.API.Features.Users;
 
@@ -36,6 +36,16 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
         if (result is not 1)
             ThrowError(ValidationMessages.SavingError);
 
-        await SendAsync(new(user.Id, user.UserName), cancellation: c);
+        await SendAsync(new CreateUserResponse(user.Id, user.UserName), cancellation: c);
+    }
+}
+
+public sealed class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
+{
+    public CreateUserRequestValidator()
+    {
+        RuleFor(x => x.Username).NotEmpty();
+        RuleFor(x => x.Password).NotEmpty();
+        RuleFor(x => x.Email).NotEmpty();
     }
 }

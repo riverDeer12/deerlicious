@@ -3,6 +3,7 @@ using Deerlicious.API.Database;
 using Deerlicious.API.Services;
 using FastEndpoints;
 using FastEndpoints.Security;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Authentication;
@@ -31,7 +32,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     public override async Task HandleAsync(LoginRequest request, CancellationToken ct)
     {
         var user = await _context.Users
-            .Include(u => u.Roles)
+            .Include(x => x.Roles).ThenInclude(userRole => userRole.Role)
             .FirstOrDefaultAsync(x => x.UserName == request.Username, ct);
 
         if(user is null)
@@ -50,5 +51,14 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
             });
 
         await SendAsync(new LoginResponse(jwtToken), cancellation: ct);
+    }
+}
+
+public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
+{
+    public LoginRequestValidator()
+    {
+        RuleFor(x => x.Username).NotEmpty();
+        RuleFor(x => x.Password).NotEmpty();
     }
 }

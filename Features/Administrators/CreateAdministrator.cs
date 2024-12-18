@@ -2,6 +2,7 @@ using FastEndpoints;
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
@@ -43,5 +44,14 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
 
         await SendAsync(new CreateAdministratorResponse(newAdministrator.Id, newAdministrator.FullName),
             cancellation: ct);
+    }
+}
+
+public sealed class CreateAdministratorRequestValidator : AbstractValidator<CreateAdministratorRequest>
+{
+    public CreateAdministratorRequestValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty();
+        RuleFor(x => x.LastName).NotEmpty();
     }
 }

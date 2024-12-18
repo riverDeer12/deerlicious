@@ -18,7 +18,6 @@ public class CurrentUserService : ICurrentUserService
             if (userIdClaim is null)
                 throw new UnauthorizedAccessException("There is no logged user user provided.");
 
-
             return Guid.Parse(userIdClaim);
         }
     }
