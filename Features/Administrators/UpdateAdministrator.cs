@@ -33,7 +33,7 @@ public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, 
                 .FirstOrDefaultAsync(x => x.Id == administratorId, cancellationToken: ct);
 
         if (administrator is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         administrator.FirstName = req.FirstName;
         administrator.LastName = req.LastName;
@@ -43,7 +43,7 @@ public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, 
         var result = await _context.SaveChangesAsync(ct);
 
         if (result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new(administrator.Id, administrator.FullName), cancellation: ct);
     }

@@ -37,7 +37,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
             .FirstOrDefaultAsync(x => x.UserName == request.Username, ct);
 
         if (user is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         if (!user.IsValidPassword(request.Password))
             ThrowError(ValidationMessages.WrongUserNameOrPassword);

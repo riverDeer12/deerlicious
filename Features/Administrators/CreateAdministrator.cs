@@ -31,7 +31,7 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email, ct);
 
         if (user is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         var newAdministrator = Administrator.Create(request.FirstName, request.LastName);
 
@@ -40,18 +40,18 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
         var result = await _context.SaveChangesAsync(ct);
 
         if (result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateAdministratorResponse(newAdministrator.Id, newAdministrator.FullName),
             cancellation: ct);
     }
 }
 
-public sealed class CreateAdministratorRequestValidator : AbstractValidator<CreateAdministratorRequest>
+public sealed class CreateAdministratorRequestValidator : Validator<CreateAdministratorRequest>
 {
     public CreateAdministratorRequestValidator()
     {
-        RuleFor(x => x.FirstName).NotEmpty();
-        RuleFor(x => x.LastName).NotEmpty();
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

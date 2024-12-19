@@ -33,7 +33,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
                 .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: ct);
 
         if (contributor is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         contributor.FirstName = req.FirstName;
         contributor.LastName = req.LastName;
@@ -43,7 +43,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
         var result = await _context.SaveChangesAsync(ct);
 
         if (result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new(contributor.Id, contributor.FullName), cancellation: ct);
     }

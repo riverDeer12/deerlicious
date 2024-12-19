@@ -15,10 +15,7 @@ public class CurrentUserService : ICurrentUserService
         {
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
 
-            if (userIdClaim is null)
-                throw new UnauthorizedAccessException("There is no logged user user provided.");
-
-            return Guid.Parse(userIdClaim);
+            return userIdClaim is null ? Guid.Empty : Guid.Parse(userIdClaim);
         }
     }
 }

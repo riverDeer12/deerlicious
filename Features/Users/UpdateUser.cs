@@ -33,7 +33,7 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
             cancellationToken: c);
         
         if(user is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         user.Email = request.Email;
 
@@ -42,7 +42,7 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
         var result = await _context.SaveChangesAsync(c);
         
         if(result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new(user.Email, user.UserName), cancellation: c);
     }

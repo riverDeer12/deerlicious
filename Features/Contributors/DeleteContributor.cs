@@ -32,7 +32,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
                 .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: ct);
 
         if (contributor is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         contributor.Delete();
 
@@ -41,7 +41,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
         var result = await _context.SaveChangesAsync(ct);
 
         if (result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new DeleteContributorResponse(contributor.Id, contributor.FullName), cancellation: ct);
     }

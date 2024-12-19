@@ -58,7 +58,7 @@ public class DeerliciousContext : DbContext
                 case EntityState.Deleted:
                     break;
                 default:
-                    throw new Exception(ValidationMessages.SavingError);
+                    throw new Exception(ErrorMessages.SavingError);
             }
 
             entity.UpdatedAt = DateTimeOffset.Now;

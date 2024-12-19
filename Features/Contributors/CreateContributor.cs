@@ -32,7 +32,7 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email, ct);
 
         if (user is null)
-            ThrowError(ValidationMessages.NotFound);
+            ThrowError(ErrorMessages.NotFound);
 
         var newContributor = Contributor.Create(request.FirstName, request.LastName);
 
@@ -41,18 +41,18 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
         var result = await _context.SaveChangesAsync(ct);
 
         if (result is not 1)
-            ThrowError(ValidationMessages.SavingError);
+            ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateContributorResponse(newContributor.Id, newContributor.FullName),
             cancellation: ct);
     }
 }
 
-public sealed class CreateContributorRequestValidator : AbstractValidator<CreateContributorRequest>
+public sealed class CreateContributorRequestValidator : Validator<CreateContributorRequest>
 {
     public CreateContributorRequestValidator()
     {
-        RuleFor(x => x.FirstName).NotEmpty();
-        RuleFor(x => x.LastName).NotEmpty();
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }
