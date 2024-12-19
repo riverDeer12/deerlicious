@@ -1,0 +1,21 @@
+meta {
+  name: Update User
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{domain}}/api/users/?id=123
+  body: json
+  auth: none
+}
+
+params:query {
+  id: 123
+}
+
+body:json {
+  {
+    "email": ""
+  }
+}

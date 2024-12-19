@@ -1,0 +1,15 @@
+meta {
+  name: Delete Administrator
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{domain}}/api/administrators?id=123
+  body: none
+  auth: none
+}
+
+params:query {
+  id: 123
+}
