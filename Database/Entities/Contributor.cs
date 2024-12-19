@@ -9,9 +9,10 @@ public class Contributor : UserType
 
     [NotMapped] public string FullName => $"{FirstName} {LastName}";
     
-    public static Contributor Create(string requestFirstName, string requestLastName)
+    public static Contributor Create(User user, string requestFirstName, string requestLastName)
         => new ()
         {
+            User = user,
             FirstName = requestFirstName,
             LastName = requestLastName
         };

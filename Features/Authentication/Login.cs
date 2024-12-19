@@ -1,6 +1,5 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
-using Deerlicious.API.Services;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FluentValidation;
@@ -56,7 +55,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     }
 }
 
-public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
+public sealed class LoginRequestValidator : Validator<LoginRequest>
 {
     public LoginRequestValidator()
     {

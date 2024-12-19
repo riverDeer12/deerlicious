@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Contributors;
 
-public sealed record CreateContributorRequest(string FirstName, string LastName, string Email);
+public sealed record CreateContributorRequest(Guid UserId, string FirstName, string LastName);
 
 public sealed record CreateContributorResponse(Guid Id, string FullName);
 
@@ -29,12 +29,12 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
 
     public override async Task HandleAsync(CreateContributorRequest request, CancellationToken ct)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email, ct);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, ct);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var newContributor = Contributor.Create(request.FirstName, request.LastName);
+        var newContributor = Contributor.Create(user, request.FirstName, request.LastName);
 
         _context.Contributors.Add(newContributor);
 
@@ -54,5 +54,6 @@ public sealed class CreateContributorRequestValidator : Validator<CreateContribu
     {
         RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.UserId).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

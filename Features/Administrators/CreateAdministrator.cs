@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
 
-public sealed record CreateAdministratorRequest(string FirstName, string LastName, string Email);
+public sealed record CreateAdministratorRequest(Guid UserId, string FirstName, string LastName);
 public sealed record CreateAdministratorResponse(Guid Id, string FullName);
 
 public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRequest, CreateAdministratorResponse>
@@ -28,12 +28,12 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
 
     public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken ct)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email, ct);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, ct);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var newAdministrator = Administrator.Create(request.FirstName, request.LastName);
+        var newAdministrator = Administrator.Create(user, request.FirstName, request.LastName);
 
         _context.Administrators.Add(newAdministrator);
 
@@ -53,5 +53,6 @@ public sealed class CreateAdministratorRequestValidator : Validator<CreateAdmini
     {
         RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.UserId).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }
