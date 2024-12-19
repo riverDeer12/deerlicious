@@ -14,7 +14,7 @@ public abstract class BaseEntity
     
     public Guid UpdatedBy { get; set; }
     public bool IsDeleted { get; set; }
-    public DateTimeOffset DeletedAt { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
 
     public void  Delete()
     {

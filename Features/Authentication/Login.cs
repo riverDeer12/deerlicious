@@ -48,7 +48,8 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                 o.SigningKey = _configuration["JWTSecretKey"] ?? string.Empty;
                 o.ExpireAt = DateTime.Now.AddDays(1);
                 o.User.Roles.AddRange(user.Roles.Select(r => r.Role.Name));
-                o.User.Claims.Add(("name", request.Username), ("sub", user.Id.ToString()));
+                o.User.Claims.Add(("name", request.Username), 
+                    ("sub", user.Id.ToString()));
             });
 
         await SendAsync(new LoginResponse(jwtToken), cancellation: ct);
