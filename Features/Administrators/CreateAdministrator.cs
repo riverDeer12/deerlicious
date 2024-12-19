@@ -23,7 +23,7 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
     {
         Post("api/administrators");
         AllowAnonymous();
-        Options(x => x.WithTags("Administrator"));
+        Options(x => x.WithTags("Administrators"));
     }
 
     public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken ct)
