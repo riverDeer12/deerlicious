@@ -5,11 +5,14 @@ meta {
 }
 
 put {
-  url: {{domain}}/api/administrators?id=123
-  body: none
-  auth: none
+  url: {{domain}}/api/administrators/F2F85153-9C29-4F78-93C9-08DD2040D154
+  body: json
+  auth: inherit
 }
 
-params:query {
-  id: 123
+body:json {
+  {
+    "firstName": "Perica",
+    "lastName": "Admin"
+  }
 }

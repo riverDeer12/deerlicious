@@ -8,5 +8,5 @@ public static class SeedData
     public const string SuperAdminUserName = "superadmin";
     public const string SuperAdminEmail = "superadmin@mail.com";
     public const string SuperAdminRoleName = "SuperAdmin";
-    public const string SuperAdminRoleDescription = "Super admin role.";
+    public const string SuperAdminRoleDescription = "Role with all access.";
 }
