@@ -3,6 +3,7 @@ using Deerlicious.API.Services;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +15,15 @@ builder.Services.AddSwaggerGen();
 var configuration = builder.Configuration;
 
 builder.Services
-    .AddAuthenticationJwtBearer(s => 
+    .AddAuthenticationJwtBearer(s =>
         s.SigningKey = configuration["JWTSecretKey"])
     .AddAuthorization()
     .AddFastEndpoints();
 
 builder.Services.AddDbContext<DeerliciousContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    options
+        .UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+        .EnableSensitiveDataLogging());
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 

@@ -9,7 +9,7 @@ public class User : BaseEntity
     public required string Email { get; set; }
     public required string Password { get; set; }
     public bool EmailConfirmed { get; set; }
-    public ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
+    public ICollection<UserRole> Roles { get; set; }
     
     public Administrator Administrator { get; set; } = null!;
 
@@ -26,7 +26,7 @@ public class User : BaseEntity
     public bool IsValidPassword(string password) 
         => HashPassword(password) == Password;
 
-    private static string HashPassword(string password) =>
+    public static string HashPassword(string password) =>
         BitConverter
             .ToString(
                 SHA512.HashData(

@@ -65,6 +65,20 @@ namespace Deerlicious.API.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Administrators");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6df0981c-d566-438c-bb78-617a4586c88c"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 285, DateTimeKind.Unspecified).AddTicks(360), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            FirstName = "Super",
+                            IsDeleted = false,
+                            LastName = "Admin",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 285, DateTimeKind.Unspecified).AddTicks(360), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            UserId = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
+                        });
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.Contributor", b =>
@@ -146,6 +160,19 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("69a4116d-b1bd-4f0b-b6a7-a13bb5eb639f"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 285, DateTimeKind.Unspecified).AddTicks(310), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            Description = "Role with all access.",
+                            IsDeleted = false,
+                            Name = "SuperAdmin",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 285, DateTimeKind.Unspecified).AddTicks(310), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
+                        });
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.User", b =>
@@ -193,6 +220,21 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 284, DateTimeKind.Unspecified).AddTicks(9870), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            Email = "superadmin@mail.com",
+                            EmailConfirmed = true,
+                            IsDeleted = false,
+                            Password = "685D8127992F8280BB94EC3CF3F2B4DA35904A8AE09AC07AF245D1888A620FAF97DE8084F4141D5F2107BEB09FC7F57073EAE8746A000A0DFFD507C79ED055A3",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2024, 12, 26, 19, 11, 57, 284, DateTimeKind.Unspecified).AddTicks(9920), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            UserName = "superadmin"
+                        });
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.UserRole", b =>
@@ -208,6 +250,13 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            RoleId = new Guid("69a4116d-b1bd-4f0b-b6a7-a13bb5eb639f")
+                        });
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.Administrator", b =>

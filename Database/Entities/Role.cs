@@ -6,5 +6,5 @@ public class Role : BaseEntity
     
     public string Description { get; set; }
     
-    public ICollection<UserRole> Users { get; set; } = new List<UserRole>();
+    public ICollection<UserRole> Users { get; set; }
 }
