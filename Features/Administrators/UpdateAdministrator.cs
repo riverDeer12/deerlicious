@@ -20,7 +20,7 @@ public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, 
     public override void Configure()
     {
         Put("api/administrators/{id}");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Administrators"));
     }
 

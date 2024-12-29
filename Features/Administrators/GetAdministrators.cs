@@ -1,3 +1,4 @@
+using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,11 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
     {
         _context = context;
     }
-
+    
     public override void Configure()
     {
         Get("api/administrators");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Administrators"));
     }
 

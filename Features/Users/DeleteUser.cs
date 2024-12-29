@@ -19,7 +19,7 @@ public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
     public override void Configure()
     {
         Delete("api/users/{id}");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Users"));
     }
     

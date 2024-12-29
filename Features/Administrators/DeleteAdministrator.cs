@@ -19,7 +19,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdminist
     public override void Configure()
     {
         Delete("api/administrators/{id}");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Administrators"));
     }
 
