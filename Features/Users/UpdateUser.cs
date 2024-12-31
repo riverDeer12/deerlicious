@@ -1,11 +1,13 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Users;
 
 public sealed record UpdateUserRequest(string Email);
+
 public sealed record UpdateUserResponse(string Username, string Email);
 
 public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserResponse>
@@ -29,10 +31,10 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
     {
         var routeUserId = Route<Guid>("id", isRequired: true);
 
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == routeUserId, 
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == routeUserId,
             cancellationToken: cancellationToken);
-        
-        if(user is null)
+
+        if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
         user.Email = request.Email;
@@ -40,10 +42,18 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
         _context.Users.Update(user);
 
         var result = await _context.SaveChangesAsync(cancellationToken);
-        
-        if(result is not 1)
+
+        if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new(user.Email, user.UserName), cancellation: cancellationToken);
+    }
+}
+
+public sealed class UpdateUserValidator : Validator<UpdateUserRequest>
+{
+    public UpdateUserValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

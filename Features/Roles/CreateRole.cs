@@ -2,6 +2,7 @@ using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
 using FastEndpoints;
+using FluentValidation;
 
 namespace Deerlicious.API.Features.Roles;
 
@@ -38,5 +39,13 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
 
         await SendAsync(new CreateRoleResponse(newRole.Id, newRole.Name),
             cancellation: cancellationToken);
+    }
+}
+
+public sealed class CreateRoleValidator : Validator<CreateRoleRequest>
+{
+    public CreateRoleValidator()
+    {
+        RuleFor(x => x.RoleName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

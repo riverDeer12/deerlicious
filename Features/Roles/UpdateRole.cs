@@ -1,6 +1,7 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Roles;
@@ -46,5 +47,13 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new UpdateRoleResponse(role.Id, role.Name), cancellation: cancellationToken);
+    }
+}
+
+public sealed class UpdateRoleValidator : Validator<UpdateRoleRequest>
+{
+    public UpdateRoleValidator()
+    {
+        RuleFor(x => x.RoleName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

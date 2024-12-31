@@ -1,11 +1,13 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Contributors;
 
 public sealed record UpdateContributorRequest(string FirstName, string LastName);
+
 public sealed record UpdateContributorResponse(Guid Id, string FullName);
 
 public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, UpdateContributorResponse>
@@ -45,6 +47,16 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new(contributor.Id, contributor.FullName), cancellation: cancellationToken);
+        await SendAsync(new UpdateContributorResponse(contributor.Id, contributor.FullName),
+            cancellation: cancellationToken);
+    }
+}
+
+public sealed class UpdateContributorValidator : Validator<UpdateContributorRequest>
+{
+    public UpdateContributorValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

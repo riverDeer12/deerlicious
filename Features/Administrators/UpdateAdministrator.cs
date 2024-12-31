@@ -1,6 +1,7 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
@@ -47,5 +48,15 @@ public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, 
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new(administrator.Id, administrator.FullName), cancellation: cancellationToken);
+    }
+}
+
+public sealed class UpdateAdministratorValidator : Validator<UpdateAdministratorRequest>
+{
+    public UpdateAdministratorValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }
