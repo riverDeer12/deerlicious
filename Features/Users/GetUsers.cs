@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Users;
 
-public sealed record GetUsersResponse(Guid Id, string Username, string Email, List<string> Roles);
+public sealed record GetUserResponse(Guid Id, string Username, string Email, List<string> Roles);
 
-public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUsersResponse>>
+public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserResponse>>
 {
     private readonly DeerliciousContext _context;
 
@@ -33,7 +33,7 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUsersRespo
             await SendAsync([], cancellation: cancellationToken);
 
         await SendAsync(users.Select(x =>
-                    new GetUsersResponse(
+                    new GetUserResponse(
                         x.Id,
                         x.UserName,
                         x.Email,

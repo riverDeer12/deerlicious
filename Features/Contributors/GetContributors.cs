@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Contributors;
 
-public sealed record GetContributorsResponse(Guid Id, string FullName);
+public sealed record GetContributorResponse(Guid Id, string FullName);
 
-public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetContributorsResponse>>
+public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetContributorResponse>>
 {
     private readonly DeerliciousContext _context;
 
@@ -30,6 +30,6 @@ public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetCon
             await SendAsync([], cancellation: cancellationToken);
         
         await SendAsync(contributors.Select(x => 
-            new GetContributorsResponse(x.Id, x.FullName)).ToList(), cancellation: cancellationToken);
+            new GetContributorResponse(x.Id, x.FullName)).ToList(), cancellation: cancellationToken);
     }
 }

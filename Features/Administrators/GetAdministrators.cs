@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
 
-public sealed record GetAdministratorsResponse(string FullName);
+public sealed record GetAdministratorResponse(string FullName);
 
-public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetAdministratorsResponse>>
+public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetAdministratorResponse>>
 {
     private readonly DeerliciousContext _context;
 
@@ -31,7 +31,7 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
             await SendAsync([], cancellation: cancellationToken);
 
         await SendAsync(administrators
-            .Select(x => new GetAdministratorsResponse(x.FullName))
+            .Select(x => new GetAdministratorResponse(x.FullName))
             .ToList(), cancellation: cancellationToken);
     }
 }
