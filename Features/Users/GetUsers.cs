@@ -23,14 +23,14 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUsersRespo
         Options(x => x.WithTags("Users"));
     }
     
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var users = await _context.Users
             .Include(userRole => userRole.Roles)
-            .ThenInclude(userRole => userRole.Role).ToListAsync(ct);
+            .ThenInclude(userRole => userRole.Role).ToListAsync(cancellationToken);
 
         if (users.Count is 0)
-            await SendAsync([], cancellation: ct);
+            await SendAsync([], cancellation: cancellationToken);
 
         await SendAsync(users.Select(x =>
                     new GetUsersResponse(
@@ -39,6 +39,6 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUsersRespo
                         x.Email,
                         x.Roles.Select(userRole => userRole.Role.Name).ToList()))
                 .ToList(),
-            cancellation: ct);
+            cancellation: cancellationToken);
     }
 }

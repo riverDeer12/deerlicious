@@ -25,12 +25,12 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
     }
 
 
-    public override async Task HandleAsync(UpdateUserRequest request, CancellationToken c)
+    public override async Task HandleAsync(UpdateUserRequest request, CancellationToken cancellationToken)
     {
         var routeUserId = Route<Guid>("id", isRequired: true);
 
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == routeUserId, 
-            cancellationToken: c);
+            cancellationToken: cancellationToken);
         
         if(user is null)
             ThrowError(ErrorMessages.NotFound);
@@ -39,11 +39,11 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
 
         _context.Users.Update(user);
 
-        var result = await _context.SaveChangesAsync(c);
+        var result = await _context.SaveChangesAsync(cancellationToken);
         
         if(result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new(user.Email, user.UserName), cancellation: c);
+        await SendAsync(new(user.Email, user.UserName), cancellation: cancellationToken);
     }
 }

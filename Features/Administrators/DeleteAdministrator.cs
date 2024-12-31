@@ -23,13 +23,13 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdminist
         Options(x => x.WithTags("Administrators"));
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var administratorId = Route<Guid>("id", isRequired: true);
 
         var administrator =
             await _context.Administrators
-                .FirstOrDefaultAsync(x => x.Id == administratorId, cancellationToken: ct);
+                .FirstOrDefaultAsync(x => x.Id == administratorId, cancellationToken: cancellationToken);
 
         if (administrator is null)
             ThrowError(ErrorMessages.NotFound);
@@ -38,11 +38,11 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdminist
 
         _context.Administrators.Update(administrator);
 
-        var result = await _context.SaveChangesAsync(ct);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new DeleteAdministratorResponse(administrator.Id, administrator.FullName), cancellation: ct);
+        await SendAsync(new DeleteAdministratorResponse(administrator.Id, administrator.FullName), cancellation: cancellationToken);
     }
 }

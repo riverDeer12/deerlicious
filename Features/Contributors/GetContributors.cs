@@ -22,14 +22,14 @@ public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetCon
         Options(x => x.WithTags("Contributors"));
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var contributors = await _context.Contributors.ToListAsync(ct);
+        var contributors = await _context.Contributors.ToListAsync(cancellationToken);
 
         if (contributors.Count is 0) 
-            await SendAsync([], cancellation: ct);
+            await SendAsync([], cancellation: cancellationToken);
         
         await SendAsync(contributors.Select(x => 
-            new GetContributorsResponse(x.Id, x.FullName)).ToList(), cancellation: ct);
+            new GetContributorsResponse(x.Id, x.FullName)).ToList(), cancellation: cancellationToken);
     }
 }

@@ -23,15 +23,15 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
         Options(x => x.WithTags("Administrators"));
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var administrators = await _context.Administrators.ToListAsync(cancellationToken: ct);
+        var administrators = await _context.Administrators.ToListAsync(cancellationToken: cancellationToken);
 
         if (administrators.Count is 0)
-            await SendAsync([], cancellation: ct);
+            await SendAsync([], cancellation: cancellationToken);
 
         await SendAsync(administrators
             .Select(x => new GetAdministratorsResponse(x.FullName))
-            .ToList(), cancellation: ct);
+            .ToList(), cancellation: cancellationToken);
     }
 }

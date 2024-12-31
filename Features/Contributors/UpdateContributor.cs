@@ -24,27 +24,27 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
         Options(x => x.WithTags("Contributors"));
     }
 
-    public override async Task HandleAsync(UpdateContributorRequest req, CancellationToken ct)
+    public override async Task HandleAsync(UpdateContributorRequest request, CancellationToken cancellationToken)
     {
         var contributorId = Route<Guid>("id", isRequired: true);
 
         var contributor =
             await _context.Contributors
-                .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: ct);
+                .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: cancellationToken);
 
         if (contributor is null)
             ThrowError(ErrorMessages.NotFound);
 
-        contributor.FirstName = req.FirstName;
-        contributor.LastName = req.LastName;
+        contributor.FirstName = request.FirstName;
+        contributor.LastName = request.LastName;
 
         _context.Contributors.Update(contributor);
 
-        var result = await _context.SaveChangesAsync(ct);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new(contributor.Id, contributor.FullName), cancellation: ct);
+        await SendAsync(new(contributor.Id, contributor.FullName), cancellation: cancellationToken);
     }
 }

@@ -23,13 +23,13 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
         Options(x => x.WithTags("Contributors"));
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var contributorId = Route<Guid>("id", isRequired: true);
 
         var contributor =
             await _context.Contributors
-                .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: ct);
+                .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: cancellationToken);
 
         if (contributor is null)
             ThrowError(ErrorMessages.NotFound);
@@ -38,11 +38,11 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
 
         _context.Contributors.Update(contributor);
 
-        var result = await _context.SaveChangesAsync(ct);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new DeleteContributorResponse(contributor.Id, contributor.FullName), cancellation: ct);
+        await SendAsync(new DeleteContributorResponse(contributor.Id, contributor.FullName), cancellation: cancellationToken);
     }
 }

@@ -26,10 +26,10 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
         Options(x => x.WithTags("Users"));
     }
 
-    public override async Task HandleAsync(CreateUserRequest request, CancellationToken c)
+    public override async Task HandleAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
         var usernameExists = await _context.Users
-            .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: c) 
+            .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: cancellationToken) 
             is not null;
 
         if (usernameExists)
@@ -39,12 +39,12 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
         _context.Users.Add(user);
 
-        var result = await _context.SaveChangesAsync(c);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new CreateUserResponse(user.Id, user.UserName), cancellation: c);
+        await SendAsync(new CreateUserResponse(user.Id, user.UserName), cancellation: cancellationToken);
     }
 }
 

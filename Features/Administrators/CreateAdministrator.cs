@@ -26,9 +26,9 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
         Options(x => x.WithTags("Administrators"));
     }
 
-    public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken ct)
+    public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, ct);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
@@ -37,13 +37,13 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
 
         _context.Administrators.Add(newAdministrator);
 
-        var result = await _context.SaveChangesAsync(ct);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateAdministratorResponse(newAdministrator.Id, newAdministrator.FullName),
-            cancellation: ct);
+            cancellation: cancellationToken);
     }
 }
 

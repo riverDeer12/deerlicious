@@ -29,11 +29,11 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         Options(x => x.WithTags("Authentication"));
     }
 
-    public override async Task HandleAsync(LoginRequest request, CancellationToken ct)
+    public override async Task HandleAsync(LoginRequest request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
             .Include(x => x.Roles).ThenInclude(userRole => userRole.Role)
-            .FirstOrDefaultAsync(x => x.UserName == request.Username, ct);
+            .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
@@ -51,7 +51,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                     ("sub", user.Id.ToString()));
             });
 
-        await SendAsync(new LoginResponse(jwtToken), cancellation: ct);
+        await SendAsync(new LoginResponse(jwtToken), cancellation: cancellationToken);
     }
 }
 

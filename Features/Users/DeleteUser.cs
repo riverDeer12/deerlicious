@@ -23,12 +23,12 @@ public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
         Options(x => x.WithTags("Users"));
     }
     
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var userId = Route<Guid>("id", isRequired: true);
 
         var user = await _context.Users
-            .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken: ct);
+            .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken: cancellationToken);
 
         if (user == null)
             ThrowError(ErrorMessages.NotFound);
@@ -37,11 +37,11 @@ public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
 
         _context.Users.Update(user);
         
-        var result = await _context.SaveChangesAsync(ct);
+        var result = await _context.SaveChangesAsync(cancellationToken);
         
         if(result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new DeleteUserResponse(user.Id, user.UserName), cancellation: ct);
+        await SendAsync(new DeleteUserResponse(user.Id, user.UserName), cancellation: cancellationToken);
     }
 }
