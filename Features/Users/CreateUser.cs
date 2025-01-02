@@ -48,9 +48,9 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
     }
 }
 
-public sealed class CreateUserRequestValidator : Validator<CreateUserRequest>
+public sealed class CreateUserValidator : Validator<CreateUserRequest>
 {
-    public CreateUserRequestValidator()
+    public CreateUserValidator()
     {
         RuleFor(x => x.Username).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.Password).NotEmpty().WithMessage(ValidationMessages.Required);

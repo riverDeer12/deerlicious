@@ -47,9 +47,9 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
     }
 }
 
-public sealed class CreateAdministratorRequestValidator : Validator<CreateAdministratorRequest>
+public sealed class CreateAdministratorValidator : Validator<CreateAdministratorRequest>
 {
-    public CreateAdministratorRequestValidator()
+    public CreateAdministratorValidator()
     {
         RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
