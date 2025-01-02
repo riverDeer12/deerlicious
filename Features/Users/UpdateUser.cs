@@ -22,10 +22,9 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
     public override void Configure()
     {
         Put("api/users/{id}");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Users"));
     }
-
 
     public override async Task HandleAsync(UpdateUserRequest request, CancellationToken cancellationToken)
     {

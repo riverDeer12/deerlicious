@@ -22,7 +22,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
     public override void Configure()
     {
         Post("api/users");
-        AllowAnonymous();
+        Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Users"));
     }
 

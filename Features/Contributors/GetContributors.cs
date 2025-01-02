@@ -1,3 +1,4 @@
+using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetCon
     public override void Configure()
     {
         Get("api/contributors");
-        AllowAnonymous();
+        Policies(UserPolicies.CanGetContributors);
         Options(x => x.WithTags("Contributors"));
     }
 

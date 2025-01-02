@@ -22,7 +22,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
     public override void Configure()
     {
         Put("api/contributors/{id}");
-        AllowAnonymous();
+        Policies(UserPolicies.CanUpdateContributor);
         Options(x => x.WithTags("Contributors"));
     }
 
