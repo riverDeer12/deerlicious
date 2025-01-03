@@ -4,6 +4,7 @@ using Deerlicious.API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deerlicious.API.Database.Migrations
 {
     [DbContext(typeof(DeerliciousContext))]
-    partial class DeerliciousContextModelSnapshot : ModelSnapshot
+    [Migration("20250102140805_AddedPoliciesWithPolicyCategory")]
+    partial class AddedPoliciesWithPolicyCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,13 +72,13 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9e1e75eb-3c93-41ac-a731-d0234e8524f5"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7020), new TimeSpan(0, 1, 0, 0, 0)),
+                            Id = new Guid("e91f3e70-48e4-4407-ac31-50a963ef00c1"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3710), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             FirstName = "Super",
                             IsDeleted = false,
                             LastName = "Admin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7020), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3710), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserId = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
@@ -130,10 +133,6 @@ namespace Deerlicious.API.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -156,6 +155,10 @@ namespace Deerlicious.API.Database.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("PolicyCategory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -165,56 +168,6 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Policies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("5176d0de-5459-4390-8371-64327ca0a936"),
-                            Category = "Contributors",
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7110), new TimeSpan(0, 1, 0, 0, 0)),
-                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            Description = "Allows viewing contributors.",
-                            IsDeleted = false,
-                            Name = "CanGetContributors",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7110), new TimeSpan(0, 1, 0, 0, 0)),
-                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
-                        },
-                        new
-                        {
-                            Id = new Guid("14586154-9c2f-42ca-8acb-622ebd7a1cf6"),
-                            Category = "Contributors",
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7120), new TimeSpan(0, 1, 0, 0, 0)),
-                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            Description = "Allows creating new contributors.",
-                            IsDeleted = false,
-                            Name = "CanCreateContributor",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7120), new TimeSpan(0, 1, 0, 0, 0)),
-                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
-                        },
-                        new
-                        {
-                            Id = new Guid("f7a17009-275d-49f1-93a5-7986831149fa"),
-                            Category = "Contributors",
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7130), new TimeSpan(0, 1, 0, 0, 0)),
-                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            Description = "Allows updating existing contributors.",
-                            IsDeleted = false,
-                            Name = "CanUpdateContributor",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7130), new TimeSpan(0, 1, 0, 0, 0)),
-                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
-                        },
-                        new
-                        {
-                            Id = new Guid("a4596b83-351f-47d4-bd76-3ffc37d6437a"),
-                            Category = "Contributors",
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7130), new TimeSpan(0, 1, 0, 0, 0)),
-                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            Description = "Allows deleting contributors.",
-                            IsDeleted = false,
-                            Name = "CanDeleteContributor",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(7130), new TimeSpan(0, 1, 0, 0, 0)),
-                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
-                        });
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.Role", b =>
@@ -259,12 +212,12 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("69a4116d-b1bd-4f0b-b6a7-a13bb5eb639f"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(6960), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3660), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Role with all access.",
                             IsDeleted = false,
                             Name = "SuperAdmin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(6960), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3670), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
                 });
@@ -334,13 +287,13 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(6370), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3260), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Email = "superadmin@mail.com",
                             EmailConfirmed = true,
                             IsDeleted = false,
                             Password = "685D8127992F8280BB94EC3CF3F2B4DA35904A8AE09AC07AF245D1888A620FAF97DE8084F4141D5F2107BEB09FC7F57073EAE8746A000A0DFFD507C79ED055A3",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 16, 43, 11, 396, DateTimeKind.Unspecified).AddTicks(6430), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 2, 15, 8, 4, 848, DateTimeKind.Unspecified).AddTicks(3310), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserName = "superadmin"
                         });

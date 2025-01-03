@@ -7,6 +7,7 @@ public class Role : BaseEntity
     public string Description { get; set; }
 
     public ICollection<UserRole> Users { get; set; }
+    public ICollection<RolePolicy> Policies { get; set; }
 
     public static Role Create(string roleName)
         => new()

@@ -1,5 +1,5 @@
 using Deerlicious.API.Constants;
-using Deerlicious.API.Database;
+using Deerlicious.API.Database;  
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +19,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
     public override void Configure()
     {
         Delete("api/contributors/{id}");
-        Policies(UserPolicies.CanDeleteContributor);
+        Policies(UserPolicies.CanDeleteContributor.Name);
         Options(x => x.WithTags("Contributors"));
     }
 

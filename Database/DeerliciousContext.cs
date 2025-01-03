@@ -15,19 +15,25 @@ public class DeerliciousContext : DbContext
     {
         _currentUserService = currentUserService;
     }
-
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
+    
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
+    
+    public DbSet<Policy> Policies { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<RolePolicy> RolePolicies { get; set; }
+    public DbSet<User> Users { get; set; }
+    
+    public DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserRoleConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AdministratorConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PolicyConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RolePolicyConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserRoleConfiguration).Assembly);
 
         // Seed Users
         modelBuilder.Entity<User>().HasData(
@@ -84,6 +90,26 @@ public class DeerliciousContext : DbContext
             FirstName = SeedData.SuperAdminFirstName,
             LastName = SeedData.SuperAdminLastName
         });
+        
+        // Seed Policies
+        
+        var policies = UserPolicies.GetUserPolicies()
+            .Select(policy => new Policy
+            {
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTimeOffset.Now,
+                CreatedBy = new Guid(SeedData.SuperAdminId),
+                UpdatedAt = DateTimeOffset.Now,
+                UpdatedBy = new Guid(SeedData.SuperAdminId),
+                IsDeleted = false,
+                DeletedAt = null,
+                Name = policy.Name,
+                Description = policy.Description,
+                Category = policy.Category 
+            })
+            .ToList();        
+        
+        modelBuilder.Entity<Policy>().HasData(policies);
 
         base.OnModelCreating(modelBuilder);
     }
