@@ -4,6 +4,7 @@ using Deerlicious.API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deerlicious.API.Database.Migrations
 {
     [DbContext(typeof(DeerliciousContext))]
-    partial class DeerliciousContextModelSnapshot : ModelSnapshot
+    [Migration("20250106211850_AddedRecipes")]
+    partial class AddedRecipes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,13 +72,13 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b3ab8ecd-4348-4fce-a73f-a6bbdc65edad"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(7070), new TimeSpan(0, 1, 0, 0, 0)),
+                            Id = new Guid("ee81602f-4cc7-4aca-9785-aebf9a4137e0"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3120), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             FirstName = "Super",
                             IsDeleted = false,
                             LastName = "Admin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(7080), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3120), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserId = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
@@ -134,15 +137,33 @@ namespace Deerlicious.API.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -151,59 +172,99 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c9b1e9a7-8bb0-4c29-86db-cbb4389e6393"),
+                            Id = new Guid("fedc54d6-8d20-46f8-b88d-13c42e27e03c"),
                             Category = "Contributors",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3240), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows viewing contributors.",
-                            Name = "CanGetContributors"
+                            IsDeleted = false,
+                            Name = "CanGetContributors",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3240), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("4b60b7a5-53c3-4b43-9793-b0354a29dca1"),
+                            Id = new Guid("5eac0113-a223-4246-a6be-efa25f4180ef"),
                             Category = "Contributors",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3250), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows creating new contributors.",
-                            Name = "CanCreateContributor"
+                            IsDeleted = false,
+                            Name = "CanCreateContributor",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3250), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("2f54d3f8-4f36-45f9-914d-12231b9c7a77"),
+                            Id = new Guid("50d9aa48-e3a9-4da4-b583-54477d71936b"),
                             Category = "Contributors",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3250), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows updating existing contributors.",
-                            Name = "CanUpdateContributor"
+                            IsDeleted = false,
+                            Name = "CanUpdateContributor",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3250), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("1b5a4f8f-4478-4e66-b636-4b7f5c3cdb28"),
+                            Id = new Guid("4fcac512-7476-4c6f-b40c-6daadd829b65"),
                             Category = "Contributors",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3260), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows deleting contributors.",
-                            Name = "CanDeleteContributor"
+                            IsDeleted = false,
+                            Name = "CanDeleteContributor",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3260), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("6bfa4f27-39cd-4a23-9a90-503b7562de09"),
+                            Id = new Guid("1febe8cf-a4eb-48fa-a899-013198b3c503"),
                             Category = "Recipes",
-                            Description = "Allows viewing recipes.",
-                            Name = "CanGetRecipes"
-                        },
-                        new
-                        {
-                            Id = new Guid("74253b8e-6b5d-48f4-becb-02cc909de4bc"),
-                            Category = "Recipes",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3260), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows creating recipes.",
-                            Name = "CanCreateRecipe"
+                            IsDeleted = false,
+                            Name = "CanCreateRecipe",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3260), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("d07047e2-9c97-4f86-bb69-46699f9935b1"),
+                            Id = new Guid("b6de032b-31c0-4c5d-b9cd-379bfceac29c"),
                             Category = "Recipes",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3270), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
+                            Description = "Allows creating recipes.",
+                            IsDeleted = false,
+                            Name = "CanCreateRecipe",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3270), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
+                        },
+                        new
+                        {
+                            Id = new Guid("780c2d2b-1c88-40ff-90cb-70883d989383"),
+                            Category = "Recipes",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3270), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows updating recipes.",
-                            Name = "CanUpdateRecipe"
+                            IsDeleted = false,
+                            Name = "CanUpdateRecipe",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3270), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         },
                         new
                         {
-                            Id = new Guid("b23e50c8-9e16-44b3-b7d4-b4e470306f87"),
+                            Id = new Guid("67604b60-f3bd-4e24-8fa1-ce62191ad0a9"),
                             Category = "Recipes",
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3280), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Allows deleting recipes.",
-                            Name = "CanDeleteRecipe"
+                            IsDeleted = false,
+                            Name = "CanDeleteRecipe",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3280), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
                 });
 
@@ -288,12 +349,12 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("69a4116d-b1bd-4f0b-b6a7-a13bb5eb639f"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(7010), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3050), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Role with all access.",
                             IsDeleted = false,
                             Name = "SuperAdmin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(7020), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(3050), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
                 });
@@ -363,13 +424,13 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(6540), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(2490), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Email = "superadmin@mail.com",
                             EmailConfirmed = true,
                             IsDeleted = false,
                             Password = "685D8127992F8280BB94EC3CF3F2B4DA35904A8AE09AC07AF245D1888A620FAF97DE8084F4141D5F2107BEB09FC7F57073EAE8746A000A0DFFD507C79ED055A3",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 28, 42, 939, DateTimeKind.Unspecified).AddTicks(6600), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 6, 22, 18, 49, 858, DateTimeKind.Unspecified).AddTicks(2550), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserName = "superadmin"
                         });

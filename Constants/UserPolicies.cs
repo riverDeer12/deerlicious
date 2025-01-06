@@ -6,25 +6,36 @@ namespace Deerlicious.API.Constants;
 public static class UserPolicies
 {
     public static readonly Policy CanGetContributors =
-        Policy.Create(nameof(CanGetContributors), "Allows viewing contributors.", "Contributors");
+        Policy.Create("c9b1e9a7-8bb0-4c29-86db-cbb4389e6393", nameof(CanGetContributors),
+            "Allows viewing contributors.", "Contributors");
 
     public static readonly Policy CanCreateContributor =
-        Policy.Create(nameof(CanCreateContributor), "Allows creating new contributors.", "Contributors");
+        Policy.Create("4b60b7a5-53c3-4b43-9793-b0354a29dca1", nameof(CanCreateContributor),
+            "Allows creating new contributors.", "Contributors");
 
     public static readonly Policy CanUpdateContributor =
-        Policy.Create(nameof(CanUpdateContributor), "Allows updating existing contributors.", "Contributors");
+        Policy.Create("2f54d3f8-4f36-45f9-914d-12231b9c7a77", nameof(CanUpdateContributor),
+            "Allows updating existing contributors.", "Contributors");
 
     public static readonly Policy CanDeleteContributor =
-        Policy.Create(nameof(CanDeleteContributor), "Allows deleting contributors.", "Contributors");
+        Policy.Create("1b5a4f8f-4478-4e66-b636-4b7f5c3cdb28", nameof(CanDeleteContributor),
+            "Allows deleting contributors.", "Contributors");
+
+    public static readonly Policy CanGetRecipes =
+        Policy.Create("6bfa4f27-39cd-4a23-9a90-503b7562de09", nameof(CanGetRecipes), "Allows viewing recipes.",
+            "Recipes");
 
     public static readonly Policy CanCreateRecipe =
-        Policy.Create(nameof(CanCreateRecipe), "Allows creating recipes.", "Recipes");    
-    
+        Policy.Create("74253b8e-6b5d-48f4-becb-02cc909de4bc", nameof(CanCreateRecipe), "Allows creating recipes.",
+            "Recipes");
+
     public static readonly Policy CanUpdateRecipe =
-        Policy.Create(nameof(CanUpdateRecipe), "Allows updating recipes.", "Recipes");
-    
+        Policy.Create("d07047e2-9c97-4f86-bb69-46699f9935b1", nameof(CanUpdateRecipe), "Allows updating recipes.",
+            "Recipes");
+
     public static readonly Policy CanDeleteRecipe =
-        Policy.Create(nameof(CanDeleteRecipe), "Allows deleting recipes.", "Recipes");    
+        Policy.Create("b23e50c8-9e16-44b3-b7d4-b4e470306f87", nameof(CanDeleteRecipe), "Allows deleting recipes.",
+            "Recipes");
 
     public static List<Policy> GetUserPolicies()
     {

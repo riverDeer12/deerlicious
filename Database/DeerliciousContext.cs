@@ -1,5 +1,4 @@
 using Deerlicious.API.Constants;
-using Deerlicious.API.Database.Configurations;
 using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -29,14 +28,8 @@ public class DeerliciousContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AdministratorConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PolicyConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RecipeConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RolePolicyConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserRoleConfiguration).Assembly);
-
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(Program).Assembly);
+        
         // Seed Users
         modelBuilder.Entity<User>().HasData(
             new User
@@ -98,13 +91,7 @@ public class DeerliciousContext : DbContext
         var policies = UserPolicies.GetUserPolicies()
             .Select(policy => new Policy
             {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTimeOffset.Now,
-                CreatedBy = new Guid(SeedData.SuperAdminId),
-                UpdatedAt = DateTimeOffset.Now,
-                UpdatedBy = new Guid(SeedData.SuperAdminId),
-                IsDeleted = false,
-                DeletedAt = null,
+                Id = policy.Id,
                 Name = policy.Name,
                 Description = policy.Description,
                 Category = policy.Category 

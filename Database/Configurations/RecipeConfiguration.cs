@@ -10,6 +10,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Title).HasMaxLength(200);
-        builder.Property(e => e.Content).HasMaxLength(200);
+        builder.Property(e => e.Content).HasMaxLength(30000);
     }
 }

@@ -7,7 +7,7 @@ namespace Deerlicious.API.Features.Administrators;
 
 public sealed record DeleteAdministratorResponse(Guid Id, string FullName);
 
-public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdministratorResponse>
+public sealed class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdministratorResponse>
 {
     private readonly DeerliciousContext _context;
 

@@ -1,6 +1,5 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
-using Deerlicious.API.Features.Administrators;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
