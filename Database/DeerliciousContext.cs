@@ -20,6 +20,7 @@ public class DeerliciousContext : DbContext
     public DbSet<Contributor> Contributors { get; set; }
     
     public DbSet<Policy> Policies { get; set; }
+    public DbSet<Recipe> Recipes { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<RolePolicy> RolePolicies { get; set; }
     public DbSet<User> Users { get; set; }
@@ -30,6 +31,7 @@ public class DeerliciousContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AdministratorConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PolicyConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RecipeConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(RoleConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(RolePolicyConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);

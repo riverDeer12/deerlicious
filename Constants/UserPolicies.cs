@@ -6,16 +6,25 @@ namespace Deerlicious.API.Constants;
 public static class UserPolicies
 {
     public static readonly Policy CanGetContributors =
-        Policy.Create("CanGetContributors", "Allows viewing contributors.", "Contributors");
+        Policy.Create(nameof(CanGetContributors), "Allows viewing contributors.", "Contributors");
 
     public static readonly Policy CanCreateContributor =
-        Policy.Create("CanCreateContributor", "Allows creating new contributors.", "Contributors");
+        Policy.Create(nameof(CanCreateContributor), "Allows creating new contributors.", "Contributors");
 
     public static readonly Policy CanUpdateContributor =
-        Policy.Create("CanUpdateContributor", "Allows updating existing contributors.", "Contributors");
+        Policy.Create(nameof(CanUpdateContributor), "Allows updating existing contributors.", "Contributors");
 
     public static readonly Policy CanDeleteContributor =
-        Policy.Create("CanDeleteContributor", "Allows deleting contributors.", "Contributors");
+        Policy.Create(nameof(CanDeleteContributor), "Allows deleting contributors.", "Contributors");
+
+    public static readonly Policy CanCreateRecipe =
+        Policy.Create(nameof(CanCreateRecipe), "Allows creating recipes.", "Recipes");    
+    
+    public static readonly Policy CanUpdateRecipe =
+        Policy.Create(nameof(CanUpdateRecipe), "Allows updating recipes.", "Recipes");
+    
+    public static readonly Policy CanDeleteRecipe =
+        Policy.Create(nameof(CanDeleteRecipe), "Allows deleting recipes.", "Recipes");    
 
     public static List<Policy> GetUserPolicies()
     {
