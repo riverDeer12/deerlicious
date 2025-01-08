@@ -9,15 +9,9 @@ namespace Deerlicious.API.Features.Recipes;
 public sealed record CreateRecipeRequest(string Title, string Content);
 public sealed record CreateRecipeResponse(Guid Id, string Title);
 
-public sealed class CreateRecipeEndpoint : Endpoint<CreateRecipeRequest, CreateRecipeResponse>
+public sealed class CreateRecipeEndpoint(DeerliciousContext context)
+    : Endpoint<CreateRecipeRequest, CreateRecipeResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public CreateRecipeEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Post("api/recipes");
@@ -29,9 +23,9 @@ public sealed class CreateRecipeEndpoint : Endpoint<CreateRecipeRequest, CreateR
     {
         var newRecipe = Recipe.Create(request.Title, request.Content);
 
-        _context.Recipes.Add(newRecipe);
+        context.Recipes.Add(newRecipe);
         
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

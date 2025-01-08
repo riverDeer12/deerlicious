@@ -7,15 +7,8 @@ namespace Deerlicious.API.Features.Contributors;
 
 public sealed record DeleteContributorResponse(Guid Id, string FullName);
 
-public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContributorResponse>
+public class DeleteAdministratorEndpoint(DeerliciousContext context) : EndpointWithoutRequest<DeleteContributorResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public DeleteAdministratorEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Delete("api/contributors/{id}");
@@ -28,7 +21,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
         var contributorId = Route<Guid>("id", isRequired: true);
 
         var contributor =
-            await _context.Contributors
+            await context.Contributors
                 .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: cancellationToken);
 
         if (contributor is null)
@@ -36,9 +29,9 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
 
         contributor.Delete();
 
-        _context.Contributors.Update(contributor);
+        context.Contributors.Update(contributor);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

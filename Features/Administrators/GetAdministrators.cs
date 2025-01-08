@@ -7,15 +7,9 @@ namespace Deerlicious.API.Features.Administrators;
 
 public sealed record GetAdministratorResponse(string FullName);
 
-public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetAdministratorResponse>>
+public sealed class GetAdministratorsEndpoint(DeerliciousContext context)
+    : EndpointWithoutRequest<List<GetAdministratorResponse>>
 {
-    private readonly DeerliciousContext _context;
-
-    public GetAdministratorsEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-    
     public override void Configure()
     {
         Get("api/administrators");
@@ -25,7 +19,7 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var administrators = await _context.Administrators.ToListAsync(cancellationToken: cancellationToken);
+        var administrators = await context.Administrators.ToListAsync(cancellationToken: cancellationToken);
 
         if (administrators.Count is 0)
             await SendAsync([], cancellation: cancellationToken);

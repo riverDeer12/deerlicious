@@ -10,15 +10,8 @@ public sealed record CreateUserRequest(string Username, string Password, string 
 
 public sealed record CreateUserResponse(Guid Id, string Username);
 
-public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserResponse>
+public sealed class CreateUserEndpoint(DeerliciousContext context) : Endpoint<CreateUserRequest, CreateUserResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public CreateUserEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Post("api/users");
@@ -28,7 +21,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
     public override async Task HandleAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var usernameExists = await _context.Users
+        var usernameExists = await context.Users
             .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: cancellationToken) 
             is not null;
 
@@ -37,9 +30,9 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
         var user = Database.Entities.User.Create(request.Username, request.Password, request.Email);
 
-        _context.Users.Add(user);
+        context.Users.Add(user);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

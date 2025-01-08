@@ -11,15 +11,9 @@ public sealed record AddPolicyToRoleRequest(Guid PolicyId, Guid RoleId);
 
 public sealed record AddPolicyToRoleResponse(Guid PolicyId, Guid RoleId);
 
-public sealed class AddPolicyToRoleEndpoint : Endpoint<AddPolicyToRoleRequest, AddPolicyToRoleResponse>
+public sealed class AddPolicyToRoleEndpoint(DeerliciousContext context)
+    : Endpoint<AddPolicyToRoleRequest, AddPolicyToRoleResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public AddPolicyToRoleEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Post("api/policies/add-policy");
@@ -29,13 +23,13 @@ public sealed class AddPolicyToRoleEndpoint : Endpoint<AddPolicyToRoleRequest, A
 
     public override async Task HandleAsync(AddPolicyToRoleRequest request, CancellationToken cancellationToken)
     {
-        var role = await _context.Roles.FirstOrDefaultAsync(x => x.Id == request.RoleId,
+        var role = await context.Roles.FirstOrDefaultAsync(x => x.Id == request.RoleId,
             cancellationToken: cancellationToken);
 
         if (role is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var policy = await _context.Policies.FirstOrDefaultAsync(x => x.Id == request.PolicyId,
+        var policy = await context.Policies.FirstOrDefaultAsync(x => x.Id == request.PolicyId,
             cancellationToken: cancellationToken);
 
         if (policy is null)
@@ -47,9 +41,9 @@ public sealed class AddPolicyToRoleEndpoint : Endpoint<AddPolicyToRoleRequest, A
             PolicyId = request.PolicyId
         };
 
-        _context.RolePolicies.Add(rolePolicy);
+        context.RolePolicies.Add(rolePolicy);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

@@ -7,15 +7,8 @@ namespace Deerlicious.API.Features.Policies;
 
 public sealed record GetPolicyResponse(Guid PolicyId, string Name, string Description, string Category);
 
-public sealed class GetPoliciesEndpoint : EndpointWithoutRequest<List<GetPolicyResponse>>
+public sealed class GetPoliciesEndpoint(DeerliciousContext context) : EndpointWithoutRequest<List<GetPolicyResponse>>
 {
-    private readonly DeerliciousContext _context;
-
-    public GetPoliciesEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Get("api/policies");
@@ -25,7 +18,7 @@ public sealed class GetPoliciesEndpoint : EndpointWithoutRequest<List<GetPolicyR
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var policies = await _context.Policies.ToListAsync(cancellationToken: cancellationToken);
+        var policies = await context.Policies.ToListAsync(cancellationToken: cancellationToken);
 
         await SendAsync(policies
             .Select(x => new GetPolicyResponse(x.Id, x.Name, x.Description, x.Category))

@@ -7,15 +7,8 @@ namespace Deerlicious.API.Features.Recipes;
 
 public sealed record DeleteRecipeResponse(Guid Id, string Title);
 
-public sealed class DeleteRecipeEndpoint : EndpointWithoutRequest<DeleteRecipeResponse>
+public sealed class DeleteRecipeEndpoint(DeerliciousContext context) : EndpointWithoutRequest<DeleteRecipeResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public DeleteRecipeEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Delete("api/recipes/{id}");
@@ -28,7 +21,7 @@ public sealed class DeleteRecipeEndpoint : EndpointWithoutRequest<DeleteRecipeRe
         var recipeId = Route<Guid>("id", isRequired: true);
 
         var recipe =
-            await _context.Recipes
+            await context.Recipes
                 .FirstOrDefaultAsync(x => x.Id == recipeId, cancellationToken: cancellationToken);
 
         if (recipe is null)
@@ -36,9 +29,9 @@ public sealed class DeleteRecipeEndpoint : EndpointWithoutRequest<DeleteRecipeRe
 
         recipe.Delete();
 
-        _context.Recipes.Update(recipe);
+        context.Recipes.Update(recipe);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

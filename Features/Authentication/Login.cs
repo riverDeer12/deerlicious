@@ -11,17 +11,9 @@ public sealed record LoginRequest(string Username, string Password, bool Remembe
 
 public sealed record LoginResponse(string Token);
 
-public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
+public sealed class LoginEndpoint(DeerliciousContext context, IConfiguration configuration)
+    : Endpoint<LoginRequest, LoginResponse>
 {
-    private readonly DeerliciousContext _context;
-    private readonly IConfiguration _configuration;
-
-    public LoginEndpoint(DeerliciousContext context, IConfiguration configuration)
-    {
-        _context = context;
-        _configuration = configuration;
-    }
-
     public override void Configure()
     {
         Post("api/authentication/login");
@@ -31,7 +23,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
+        var user = await context.Users
             .Include(x => x.Roles).ThenInclude(userRole => userRole.Role)
             .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken);
 
@@ -44,7 +36,7 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         var jwtToken = JwtBearer.CreateToken(
             o =>
             {
-                o.SigningKey = _configuration["JWTSecretKey"] ?? string.Empty;
+                o.SigningKey = configuration["JWTSecretKey"] ?? string.Empty;
                 o.ExpireAt = DateTime.Now.AddDays(1);
                 o.User.Roles.AddRange(user.Roles.Select(r => r.Role.Name));
                 o.User.Claims.Add(("name", request.Username), 

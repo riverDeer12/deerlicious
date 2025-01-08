@@ -11,15 +11,9 @@ public sealed record CreateContributorRequest(Guid UserId, string FirstName, str
 
 public sealed record CreateContributorResponse(Guid Id, string FullName);
 
-public sealed class CreateContributorEndpoint : Endpoint<CreateContributorRequest, CreateContributorResponse>
+public sealed class CreateContributorEndpoint(DeerliciousContext context)
+    : Endpoint<CreateContributorRequest, CreateContributorResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public CreateContributorEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Post("api/contributors");
@@ -29,16 +23,16 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
 
     public override async Task HandleAsync(CreateContributorRequest request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
         var newContributor = Contributor.Create(user, request.FirstName, request.LastName);
 
-        _context.Contributors.Add(newContributor);
+        context.Contributors.Add(newContributor);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

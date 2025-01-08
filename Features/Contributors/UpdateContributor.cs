@@ -10,15 +10,9 @@ public sealed record UpdateContributorRequest(string FirstName, string LastName)
 
 public sealed record UpdateContributorResponse(Guid Id, string FullName);
 
-public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, UpdateContributorResponse>
+public class UpdateContributorEndpoint(DeerliciousContext context)
+    : Endpoint<UpdateContributorRequest, UpdateContributorResponse>
 {
-    private readonly DeerliciousContext _context;
-
-    public UpdateContributorEndpoint(DeerliciousContext context)
-    {
-        _context = context;
-    }
-
     public override void Configure()
     {
         Put("api/contributors/{id}");
@@ -31,7 +25,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
         var contributorId = Route<Guid>("id", isRequired: true);
 
         var contributor =
-            await _context.Contributors
+            await context.Contributors
                 .FirstOrDefaultAsync(x => x.Id == contributorId, cancellationToken: cancellationToken);
 
         if (contributor is null)
@@ -40,9 +34,9 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
         contributor.FirstName = request.FirstName;
         contributor.LastName = request.LastName;
 
-        _context.Contributors.Update(contributor);
+        context.Contributors.Update(contributor);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
