@@ -7,8 +7,15 @@ namespace Deerlicious.API.Features.Users;
 
 public sealed record DeleteUserResponse(Guid Id, string Username);
 
-public class DeleteUserEndpoint(DeerliciousContext context) : EndpointWithoutRequest<DeleteUserResponse>
+public class DeleteUserEndpoint : EndpointWithoutRequest<DeleteUserResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public DeleteUserEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Delete("api/users/{id}");
@@ -20,7 +27,7 @@ public class DeleteUserEndpoint(DeerliciousContext context) : EndpointWithoutReq
     {
         var userId = Route<Guid>("id", isRequired: true);
 
-        var user = await context.Users
+        var user = await _context.Users
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken: cancellationToken);
 
         if (user == null)
@@ -28,9 +35,9 @@ public class DeleteUserEndpoint(DeerliciousContext context) : EndpointWithoutReq
         
         user.Delete();
 
-        context.Users.Update(user);
+        _context.Users.Update(user);
         
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
         
         if(result is not 1)
             ThrowError(ErrorMessages.SavingError);

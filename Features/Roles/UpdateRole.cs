@@ -10,8 +10,15 @@ public sealed record UpdateRoleRequest(string RoleName);
 
 public sealed record UpdateRoleResponse(Guid Id, string FullName);
 
-public class UpdateRoleEndpoint(DeerliciousContext context) : Endpoint<UpdateRoleRequest, UpdateRoleResponse>
+public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public UpdateRoleEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Put("api/roles/{id}");
@@ -24,7 +31,7 @@ public class UpdateRoleEndpoint(DeerliciousContext context) : Endpoint<UpdateRol
         var roleId = Route<Guid>("id", isRequired: true);
 
         var role =
-            await context.Roles
+            await _context.Roles
                 .FirstOrDefaultAsync(x => x.Id == roleId, cancellationToken: cancellationToken);
 
         if (role is null)
@@ -32,9 +39,9 @@ public class UpdateRoleEndpoint(DeerliciousContext context) : Endpoint<UpdateRol
 
         role.Name = request.RoleName;
 
-        context.Roles.Update(role);
+        _context.Roles.Update(role);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

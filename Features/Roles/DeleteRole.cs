@@ -8,8 +8,15 @@ namespace Deerlicious.API.Features.Roles;
 
 public sealed record DeleteRoleResponse(Guid Id, string RoleName);
 
-public class DeleteRoleEndpoint(DeerliciousContext context) : EndpointWithoutRequest<DeleteRoleResponse>
+public class DeleteRoleEndpoint : EndpointWithoutRequest<DeleteRoleResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public DeleteRoleEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Delete("api/roles/{id}");
@@ -22,7 +29,7 @@ public class DeleteRoleEndpoint(DeerliciousContext context) : EndpointWithoutReq
         var roleId = Route<Guid>("id", isRequired: true);
 
         var role =
-            await context.Roles
+            await _context.Roles
                 .FirstOrDefaultAsync(x => x.Id == roleId, cancellationToken: cancellationToken);
 
         if (role is null)
@@ -30,9 +37,9 @@ public class DeleteRoleEndpoint(DeerliciousContext context) : EndpointWithoutReq
 
         role.Delete();
 
-        context.Roles.Update(role);
+        _context.Roles.Update(role);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

@@ -8,8 +8,15 @@ namespace Deerlicious.API.Features.Roles;
 
 public sealed record GetRoleResponse(Guid RoleId, string RoleName);
 
-public sealed class GetRolesEndpoint(DeerliciousContext context) : EndpointWithoutRequest<List<GetRoleResponse>>
+public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleResponse>>
 {
+    private readonly DeerliciousContext _context;
+
+    public GetRolesEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+    
     public override void Configure()
     {
         Get("api/roles");
@@ -19,7 +26,7 @@ public sealed class GetRolesEndpoint(DeerliciousContext context) : EndpointWitho
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var roles = await context.Roles.ToListAsync(cancellationToken: cancellationToken);
+        var roles = await _context.Roles.ToListAsync(cancellationToken: cancellationToken);
 
         if (roles.Count is 0)
             await SendAsync([], cancellation: cancellationToken);

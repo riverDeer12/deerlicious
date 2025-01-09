@@ -7,8 +7,15 @@ namespace Deerlicious.API.Features.Users;
 
 public sealed record GetUserResponse(Guid Id, string Username, string Email, List<string> Roles);
 
-public sealed class GetUsersEndpoint(DeerliciousContext context) : EndpointWithoutRequest<List<GetUserResponse>>
+public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserResponse>>
 {
+    private readonly DeerliciousContext _context;
+
+    public GetUsersEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Get("api/users");
@@ -18,7 +25,7 @@ public sealed class GetUsersEndpoint(DeerliciousContext context) : EndpointWitho
     
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var users = await context.Users
+        var users = await _context.Users
             .Include(userRole => userRole.Roles)
             .ThenInclude(userRole => userRole.Role).ToListAsync(cancellationToken);
 
