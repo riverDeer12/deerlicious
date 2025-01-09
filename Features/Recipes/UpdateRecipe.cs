@@ -10,9 +10,15 @@ public sealed record UpdateRecipeRequest(string Title, string Content);
 
 public sealed record UpdateRecipeResponse(Guid Id, string Title);
 
-public sealed class UpdateRecipeEndpoint(DeerliciousContext context)
-    : Endpoint<UpdateRecipeRequest, UpdateRecipeResponse>
+public sealed class UpdateRecipeEndpoint : Endpoint<UpdateRecipeRequest, UpdateRecipeResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public UpdateRecipeEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Put("api/recipes/{id}");
@@ -25,7 +31,7 @@ public sealed class UpdateRecipeEndpoint(DeerliciousContext context)
         var recipeId = Route<Guid>("id", isRequired: true);
 
         var recipe =
-            await context.Recipes
+            await _context.Recipes
                 .FirstOrDefaultAsync(x => x.Id == recipeId, cancellationToken: cancellationToken);
 
         if (recipe is null)
@@ -34,9 +40,9 @@ public sealed class UpdateRecipeEndpoint(DeerliciousContext context)
         recipe.Title = request.Title;
         recipe.Content = request.Content;
 
-        context.Recipes.Update(recipe);
+        _context.Recipes.Update(recipe);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
