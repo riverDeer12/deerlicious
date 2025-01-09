@@ -5,7 +5,13 @@ meta {
 }
 
 post {
-  url: {{domain}}/api/policies
-  body: none
+  url: {{domain}}/api/policies/add-policy
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "policyId":"6BFA4F27-39CD-4A23-9A90-503B7562DE09"
+  }
 }

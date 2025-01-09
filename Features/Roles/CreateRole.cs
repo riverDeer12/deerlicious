@@ -6,9 +6,9 @@ using FluentValidation;
 
 namespace Deerlicious.API.Features.Roles;
 
-public sealed record CreateRoleRequest(string RoleName);
+public sealed record CreateRoleRequest(string RoleName, string Description);
 
-public sealed record CreateRoleResponse(Guid RoleId, string RoleName);
+public sealed record CreateRoleResponse(Guid RoleId, string RoleName, string Description);
 
 public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleResponse>
 {
@@ -28,7 +28,7 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
     
     public override async Task HandleAsync(CreateRoleRequest request, CancellationToken cancellationToken)
     {
-        var newRole = Role.Create(request.RoleName);
+        var newRole = Role.Create(request.RoleName, request.Description);
 
         _context.Roles.Add(newRole);
         
@@ -37,7 +37,7 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new CreateRoleResponse(newRole.Id, newRole.Name),
+        await SendAsync(new CreateRoleResponse(newRole.Id, newRole.Name, newRole.Description),
             cancellation: cancellationToken);
     }
 }
