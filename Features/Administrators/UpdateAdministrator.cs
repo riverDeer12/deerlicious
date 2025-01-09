@@ -10,9 +10,15 @@ public sealed record UpdateAdministratorRequest(string FirstName, string LastNam
 
 public sealed record UpdateAdministratorResponse(Guid Id, string FullName);
 
-public class UpdateAdministratorEndpoint(DeerliciousContext context)
-    : Endpoint<UpdateAdministratorRequest, UpdateAdministratorResponse>
+public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, UpdateAdministratorResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public UpdateAdministratorEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Put("api/administrators/{id}");
@@ -25,7 +31,7 @@ public class UpdateAdministratorEndpoint(DeerliciousContext context)
         var administratorId = Route<Guid>("id", isRequired: true);
 
         var administrator =
-            await context.Administrators
+            await _context.Administrators
                 .FirstOrDefaultAsync(x => x.Id == administratorId, cancellationToken: cancellationToken);
 
         if (administrator is null)
@@ -34,9 +40,9 @@ public class UpdateAdministratorEndpoint(DeerliciousContext context)
         administrator.FirstName = request.FirstName;
         administrator.LastName = request.LastName;
 
-        context.Administrators.Update(administrator);
+        _context.Administrators.Update(administrator);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

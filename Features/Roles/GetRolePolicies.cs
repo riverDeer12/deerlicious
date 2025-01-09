@@ -8,9 +8,15 @@ namespace Deerlicious.API.Features.Roles;
 
 public sealed record GetRolePolicyResponse(Guid PolicyId, string Name, string Description);
 
-public sealed class GetRolePoliciesEndpoint(DeerliciousContext context)
-    : EndpointWithoutRequest<List<GetRolePolicyResponse>>
+public sealed class GetRolePoliciesEndpoint : EndpointWithoutRequest<List<GetRolePolicyResponse>>
 {
+    private readonly DeerliciousContext _context;
+
+    public GetRolePoliciesEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Get("api/roles/{id}/policies");
@@ -22,7 +28,7 @@ public sealed class GetRolePoliciesEndpoint(DeerliciousContext context)
     {
         var roleId = Route<Guid>("id", isRequired: true);
 
-        var rolePolicies = await context.RolePolicies
+        var rolePolicies = await _context.RolePolicies
             .Where(x => x.RoleId == roleId)
             .Include(x => x.Role)
             .Include(x => x.Policy)

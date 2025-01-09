@@ -7,8 +7,15 @@ namespace Deerlicious.API.Features.Recipes;
 
 public sealed record GetRecipeResponse(Guid Id, string Title, string Content);
 
-public class GetRecipesEndpoint(DeerliciousContext context) : EndpointWithoutRequest<List<GetRecipeResponse>>
+public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>>
 {
+    private readonly DeerliciousContext _context;
+
+    public GetRecipesEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Get("api/recipes");
@@ -18,7 +25,7 @@ public class GetRecipesEndpoint(DeerliciousContext context) : EndpointWithoutReq
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var recipes = await context.Recipes.ToListAsync(cancellationToken: cancellationToken);
+        var recipes = await _context.Recipes.ToListAsync(cancellationToken: cancellationToken);
 
         if (recipes.Count is 0) await SendAsync([], cancellation: cancellationToken);
         

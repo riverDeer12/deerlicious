@@ -10,9 +10,15 @@ namespace Deerlicious.API.Features.Administrators;
 public sealed record CreateAdministratorRequest(Guid UserId, string FirstName, string LastName);
 public sealed record CreateAdministratorResponse(Guid Id, string FullName);
 
-public sealed class CreateAdministratorEndpoint(DeerliciousContext context)
-    : Endpoint<CreateAdministratorRequest, CreateAdministratorResponse>
+public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRequest, CreateAdministratorResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public CreateAdministratorEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Post("api/administrators");
@@ -22,16 +28,16 @@ public sealed class CreateAdministratorEndpoint(DeerliciousContext context)
 
     public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken cancellationToken)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
         var newAdministrator = Administrator.Create(user, request.FirstName, request.LastName);
 
-        context.Administrators.Add(newAdministrator);
+        _context.Administrators.Add(newAdministrator);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

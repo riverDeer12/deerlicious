@@ -10,8 +10,15 @@ public sealed record UpdateUserRequest(string Email);
 
 public sealed record UpdateUserResponse(string Username, string Email);
 
-public sealed class UpdateUserEndpoint(DeerliciousContext context) : Endpoint<UpdateUserRequest, UpdateUserResponse>
+public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public UpdateUserEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Put("api/users/{id}");
@@ -23,7 +30,7 @@ public sealed class UpdateUserEndpoint(DeerliciousContext context) : Endpoint<Up
     {
         var routeUserId = Route<Guid>("id", isRequired: true);
 
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == routeUserId,
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == routeUserId,
             cancellationToken: cancellationToken);
 
         if (user is null)
@@ -31,9 +38,9 @@ public sealed class UpdateUserEndpoint(DeerliciousContext context) : Endpoint<Up
 
         user.Email = request.Email;
 
-        context.Users.Update(user);
+        _context.Users.Update(user);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

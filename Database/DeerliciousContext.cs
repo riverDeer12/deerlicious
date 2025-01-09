@@ -5,9 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Database;
 
-public class DeerliciousContext(DbContextOptions<DeerliciousContext> options, ICurrentUserService currentUserService)
-    : DbContext(options)
+public class DeerliciousContext : DbContext
 {
+    private readonly ICurrentUserService _currentUserService;
+
+    public DeerliciousContext(DbContextOptions<DeerliciousContext> options, ICurrentUserService currentUserService)
+        : base(options)
+    {
+        _currentUserService = currentUserService;
+    }
+    
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
     
@@ -115,7 +122,7 @@ public class DeerliciousContext(DbContextOptions<DeerliciousContext> options, IC
             {
                 case EntityState.Added:
                     entity.CreatedAt = DateTimeOffset.Now;
-                    entity.CreatedBy = currentUserService.UserId;
+                    entity.CreatedBy = _currentUserService.UserId;
                     break;
                 case EntityState.Detached:
                 case EntityState.Unchanged:
@@ -127,7 +134,7 @@ public class DeerliciousContext(DbContextOptions<DeerliciousContext> options, IC
             }
 
             entity.UpdatedAt = DateTimeOffset.Now;
-            entity.UpdatedBy = currentUserService.UserId;
+            entity.UpdatedBy = _currentUserService.UserId;
         }
 
         return await base.SaveChangesAsync(cancellationToken);

@@ -10,8 +10,15 @@ public sealed record CreateRoleRequest(string RoleName);
 
 public sealed record CreateRoleResponse(Guid RoleId, string RoleName);
 
-public sealed class CreateRoleEndpoint(DeerliciousContext context) : Endpoint<CreateRoleRequest, CreateRoleResponse>
+public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public CreateRoleEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Post("api/roles");
@@ -23,9 +30,9 @@ public sealed class CreateRoleEndpoint(DeerliciousContext context) : Endpoint<Cr
     {
         var newRole = Role.Create(request.RoleName);
 
-        context.Roles.Add(newRole);
+        _context.Roles.Add(newRole);
         
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);

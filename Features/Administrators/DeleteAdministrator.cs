@@ -7,9 +7,15 @@ namespace Deerlicious.API.Features.Administrators;
 
 public sealed record DeleteAdministratorResponse(Guid Id, string FullName);
 
-public sealed class DeleteAdministratorEndpoint(DeerliciousContext context)
-    : EndpointWithoutRequest<DeleteAdministratorResponse>
+public sealed class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteAdministratorResponse>
 {
+    private readonly DeerliciousContext _context;
+
+    public DeleteAdministratorEndpoint(DeerliciousContext context)
+    {
+        _context = context;
+    }
+
     public override void Configure()
     {
         Delete("api/administrators/{id}");
@@ -22,7 +28,7 @@ public sealed class DeleteAdministratorEndpoint(DeerliciousContext context)
         var administratorId = Route<Guid>("id", isRequired: true);
 
         var administrator =
-            await context.Administrators
+            await _context.Administrators
                 .FirstOrDefaultAsync(x => x.Id == administratorId, cancellationToken: cancellationToken);
 
         if (administrator is null)
@@ -30,9 +36,9 @@ public sealed class DeleteAdministratorEndpoint(DeerliciousContext context)
 
         administrator.Delete();
 
-        context.Administrators.Update(administrator);
+        _context.Administrators.Update(administrator);
 
-        var result = await context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
