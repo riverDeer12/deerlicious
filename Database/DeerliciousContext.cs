@@ -10,19 +10,19 @@ public class DeerliciousContext(DbContextOptions<DeerliciousContext> options, IC
 {
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
-    
+
     public DbSet<Policy> Policies { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<RolePolicy> RolePolicies { get; set; }
     public DbSet<User> Users { get; set; }
-    
+
     public DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(Program).Assembly);
-        
+
         // Seed Users
         modelBuilder.Entity<User>().HasData(
             new User
@@ -78,19 +78,19 @@ public class DeerliciousContext(DbContextOptions<DeerliciousContext> options, IC
             FirstName = SeedData.SuperAdminFirstName,
             LastName = SeedData.SuperAdminLastName
         });
-        
+
         // Seed Policies
-        
+
         var policies = UserPolicies.GetUserPolicies()
             .Select(policy => new Policy
             {
                 Id = policy.Id,
                 Name = policy.Name,
                 Description = policy.Description,
-                Category = policy.Category 
+                Category = policy.Category
             })
-            .ToList();        
-        
+            .ToList();
+
         modelBuilder.Entity<Policy>().HasData(policies);
 
         base.OnModelCreating(modelBuilder);
