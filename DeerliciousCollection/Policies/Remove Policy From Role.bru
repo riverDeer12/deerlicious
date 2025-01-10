@@ -4,15 +4,25 @@ meta {
   seq: 2
 }
 
-post {
-  url: {{domain}}/api/policies/remove-policy
+delete {
+  url: {{domain}}/api/policies/2278055E-E331-4695-2293-08DD30BDBD1E
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "policyId":"6BFA4F27-39CD-4A23-9A90-503B7562DE09",
-    "roleId":"2278055E-E331-4695-2293-08DD30BDBD1E"
+    "policyIds": [
+      "74253B8E-6B5D-48F4-BECB-02CC909DE4BC",
+      "2F54D3F8-4F36-45F9-914D-12231B9C7A77",
+      "D07047E2-9C97-4F86-BB69-46699F9935B1",
+      "1B5A4F8F-4478-4E66-B636-4B7F5C3CDB28",
+      "4B60B7A5-53C3-4B43-9793-B0354A29DCA1",
+      "B23E50C8-9E16-44B3-B7D4-B4E470306F87",
+      "C9B1E9A7-8BB0-4C29-86DB-CBB4389E6393"
+    ]
   }
+  
+  
+  
 }

@@ -2,6 +2,7 @@ using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Features.Roles;
+using EFCore.BulkExtensions;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -50,12 +51,7 @@ public sealed class AddPoliciesToRoleEndpoint : Endpoint<AddPoliciesToRoleReques
                 .Select(newRolePolicy => new RolePolicy { RoleId = roleId, PolicyId = newRolePolicy.Id })
                 .ToList();
 
-        _context.RolePolicies.AddRange(newRolePolicies);
-
-        var result = await _context.SaveChangesAsync(cancellationToken);
-
-        if (result is not 1)
-            ThrowError(ErrorMessages.SavingError);
+        await _context.BulkInsertOrUpdateAsync(newRolePolicies, cancellationToken: cancellationToken);
 
         await SendAsync(newRolePolicies
             .Select(x => new AddPoliciesToRoleResponse(x.PolicyId))

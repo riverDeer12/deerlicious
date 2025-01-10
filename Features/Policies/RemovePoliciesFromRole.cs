@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using FastEndpoints;
@@ -46,13 +45,13 @@ public sealed class
             ThrowError(ErrorMessages.NotFound);
 
         var rolePolicies = _context.RolePolicies
-            .Where(x => x.RoleId == roleId && request.PolicyIds.Contains(x.PolicyId));
+            .Where(x => x.RoleId == roleId && request.PolicyIds.Contains(x.PolicyId)).ToList();
 
         _context.RolePolicies.RemoveRange(rolePolicies);
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result != rolePolicies.Count)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(rolePolicies
