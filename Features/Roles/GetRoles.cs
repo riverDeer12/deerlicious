@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Roles;
 
-public sealed record GetRoleResponse(Guid RoleId, string RoleName);
+public sealed record GetRoleResponse(Guid RoleId, string RoleName, string Description);
 
 public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleResponse>>
 {
@@ -32,7 +32,7 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
             await SendAsync([], cancellation: cancellationToken);
 
         await SendAsync(roles
-            .Select(x => new GetRoleResponse(x.Id, x.Name))
+            .Select(x => new GetRoleResponse(x.Id, x.Name, x.Description))
             .ToList(), cancellation: cancellationToken);
     }
 }

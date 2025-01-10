@@ -5,7 +5,14 @@ meta {
 }
 
 post {
-  url: {{domain}}/api/roles/add-role
-  body: none
-  auth: none
+  url: {{domain}}/api/roles/add-user
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "roleId":"2278055E-E331-4695-2293-08DD30BDBD1E",
+    "userId":"86ea06db-2a82-4d58-757f-08dd25e2fdc0"
+  }
 }

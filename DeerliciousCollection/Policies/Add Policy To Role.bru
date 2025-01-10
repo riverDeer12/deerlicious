@@ -1,0 +1,18 @@
+meta {
+  name: Add Policy To Role
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/api/policies/add-policy
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "policyId":"6BFA4F27-39CD-4A23-9A90-503B7562DE09",
+    "roleId":"2278055E-E331-4695-2293-08DD30BDBD1E"
+  }
+}

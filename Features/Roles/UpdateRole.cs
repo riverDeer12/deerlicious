@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Roles;
 
-public sealed record UpdateRoleRequest(string RoleName);
+public sealed record UpdateRoleRequest(string RoleName, string Description);
 
-public sealed record UpdateRoleResponse(Guid Id, string FullName);
+public sealed record UpdateRoleResponse(Guid Id, string FullName, string Description);
 
 public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse>
 {
@@ -38,6 +38,7 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
             ThrowError(ErrorMessages.NotFound);
 
         role.Name = request.RoleName;
+        role.Description = request.Description;
 
         _context.Roles.Update(role);
 
@@ -46,7 +47,7 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
         if (result is not 1)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new UpdateRoleResponse(role.Id, role.Name), cancellation: cancellationToken);
+        await SendAsync(new UpdateRoleResponse(role.Id, role.Name, role.Description), cancellation: cancellationToken);
     }
 }
 
