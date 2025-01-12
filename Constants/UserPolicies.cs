@@ -37,6 +37,27 @@ public static class UserPolicies
         Policy.Create("b23e50c8-9e16-44b3-b7d4-b4e470306f87", nameof(CanDeleteRecipe), "Allows deleting recipes.",
             "Recipes");
 
+    public static readonly Policy CanGetCategories =
+        Policy.Create("d6fbb48f-5b7b-480c-8a12-117a8b5a68fd", nameof(CanGetCategories),
+            "Allows viewing recipe categories.",
+            "Categories");
+
+    public static readonly Policy CanCreateCategory =
+        Policy.Create("2875f239-3d11-452e-acdd-b8bff6a50970", nameof(CanCreateCategory),
+            "Allows creating recipe categories.",
+            "Categories");
+
+    public static readonly Policy CanUpdateCategory =
+        Policy.Create("e8f80d47-e956-4e05-a91b-d51315e629fd", nameof(CanUpdateCategory),
+            "Allows updating recipe category.",
+            "Categories");
+
+    public static readonly Policy CanDeleteCategory =
+        Policy.Create("c02b2833-ded9-4e6b-af6a-74a06cb2ffe0", nameof(CanDeleteCategory),
+            "Allows deleting recipe category.",
+            "Categories");
+
+
     public static List<Policy> GetUserPolicies()
     {
         return typeof(UserPolicies)

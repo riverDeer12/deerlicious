@@ -6,6 +6,8 @@ public class Recipe : BaseEntity
     
     public required string Content { get; set; }
     
+    public ICollection<RecipeCategory> Categories { get; set; }
+    
     public static Recipe Create(string title, string content)
         => new()
         {

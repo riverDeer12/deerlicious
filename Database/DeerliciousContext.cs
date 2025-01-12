@@ -16,10 +16,12 @@ public class DeerliciousContext : DbContext
     }
     
     public DbSet<Administrator> Administrators { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
-
     public DbSet<Policy> Policies { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
+    
+    public DbSet<RecipeCategory> RecipeCategories { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<RolePolicy> RolePolicies { get; set; }
     public DbSet<User> Users { get; set; }
