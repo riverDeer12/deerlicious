@@ -35,7 +35,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
         if (usernameExists)
             ThrowError(ValidationMessages.UsernameAlreadyExists);
 
-        var user = Database.Entities.User.Create(request.Username, request.Password, request.Email);
+        var user = Database.Entities.User.Init(request.Username, request.Password, request.Email);
 
         _context.Users.Add(user);
 

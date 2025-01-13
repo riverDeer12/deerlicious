@@ -9,7 +9,7 @@ public class Administrator : UserType
 
     [NotMapped] public string FullName => $"{FirstName} {LastName}";
 
-    public static Administrator Create(User user, string requestFirstName, string requestLastName)
+    public static Administrator Init(User user, string requestFirstName, string requestLastName)
         => new()
         {
             User = user,

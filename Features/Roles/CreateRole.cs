@@ -28,7 +28,7 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
     
     public override async Task HandleAsync(CreateRoleRequest request, CancellationToken cancellationToken)
     {
-        var newRole = Role.Create(request.RoleName, request.Description);
+        var newRole = Role.Init(request.RoleName, request.Description);
 
         _context.Roles.Add(newRole);
         

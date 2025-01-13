@@ -12,7 +12,7 @@ public class Policy
     
     public ICollection<RolePolicy> Roles { get; set; }
     
-    public static Policy Create(string id, string name, string description, string feature)
+    public static Policy Init(string id, string name, string description, string feature)
         => new()
         {
             Id = new Guid(id),

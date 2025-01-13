@@ -33,7 +33,7 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var newAdministrator = Administrator.Create(user, request.FirstName, request.LastName);
+        var newAdministrator = Administrator.Init(user, request.FirstName, request.LastName);
 
         _context.Administrators.Add(newAdministrator);
 

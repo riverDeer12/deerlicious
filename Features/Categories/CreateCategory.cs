@@ -28,7 +28,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
     public override async Task HandleAsync(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
-        var newCategory = Category.Create(request.Name, request.Description);
+        var newCategory = Category.Init(request.Name, request.Description);
 
         _context.Categories.Add(newCategory);
 

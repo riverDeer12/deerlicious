@@ -34,7 +34,7 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var newContributor = Contributor.Create(user, request.FirstName, request.LastName);
+        var newContributor = Contributor.Init(user, request.FirstName, request.LastName);
 
         _context.Contributors.Add(newContributor);
 

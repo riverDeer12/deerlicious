@@ -8,7 +8,7 @@ public class Category : BaseEntity
     
     public ICollection<RecipeCategory> Recipes { get; set; } 
     
-    public static Category Create(string name, string description)
+    public static Category Init(string name, string description)
         => new()
         {
             Name = name,

@@ -15,7 +15,7 @@ public class User : BaseEntity
 
     public Contributor Contributor { get; set; } = null!;
 
-    public static User Create(string username, string password, string email)
+    public static User Init(string username, string password, string email)
         => new()
         {
             UserName = username,

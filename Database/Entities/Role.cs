@@ -9,7 +9,7 @@ public class Role : BaseEntity
     public ICollection<UserRole> Users { get; set; }
     public ICollection<RolePolicy> Policies { get; set; }
 
-    public static Role Create(string roleName, string description)
+    public static Role Init(string roleName, string description)
         => new()
         {
             Name = roleName,
