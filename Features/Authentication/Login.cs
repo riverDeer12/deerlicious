@@ -1,5 +1,6 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FluentValidation;
@@ -41,17 +42,46 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         if (!user.IsValidPassword(request.Password))
             ThrowError(ValidationMessages.WrongUserNameOrPassword);
 
+        var roles = user.Roles.Select(r => r.Role.Name).ToList();
+
+        var isSuperAdmin = roles.Contains(nameof(SeedData.SuperAdminRoleName));
+
+        var permissions = await GetUserPermissions(isSuperAdmin, user.Roles, cancellationToken);
+
         var jwtToken = JwtBearer.CreateToken(
             o =>
             {
                 o.SigningKey = _configuration["JWTSecretKey"] ?? string.Empty;
                 o.ExpireAt = DateTime.Now.AddDays(1);
-                o.User.Roles.AddRange(user.Roles.Select(r => r.Role.Name));
-                o.User.Claims.Add(("name", request.Username), 
+                o.User.Roles.AddRange(roles);
+                o.User.Permissions.AddRange(permissions);
+                o.User.Claims.Add(("name", request.Username),
                     ("sub", user.Id.ToString()));
             });
 
         await SendAsync(new LoginResponse(jwtToken), cancellation: cancellationToken);
+    }
+
+    private async Task<List<string>> GetUserPermissions(bool isSuperAdmin, ICollection<UserRole> roles,
+        CancellationToken cancellationToken)
+    {
+        if (isSuperAdmin)
+        {
+            return await _context.Permissions.Select(x => x.Name)
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
+
+        var rolesPermissions = await _context.RolePermissions
+            .Where(rolePermission => roles
+                .Select(userRole => userRole.RoleId)
+                .Contains(rolePermission.RoleId))
+            .ToListAsync(cancellationToken: cancellationToken);
+
+        var permissions = await _context.Permissions.Where(permission =>
+                rolesPermissions.Select(rolePermission => rolePermission.PermissionId).Contains(permission.Id))
+            .ToListAsync(cancellationToken: cancellationToken);
+
+        return permissions.Select(permission => permission.Name).ToList();
     }
 }
 
