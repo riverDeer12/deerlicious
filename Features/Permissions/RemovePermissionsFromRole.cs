@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Permissions;
 
-public sealed record RemovePoliciesFromRoleRequest(List<Guid> PermissionIds);
+public sealed record RemovePermissionsFromRoleRequest(List<Guid> PermissionIds);
 
 public sealed record RemovePoliciesFromRoleResponse(Guid PermissionId);
 
 public sealed class
-    RemovePoliciesFromRoleEndpoint : Endpoint<RemovePoliciesFromRoleRequest, List<RemovePoliciesFromRoleResponse>>
+    RemovePoliciesFromRoleEndpoint : Endpoint<RemovePermissionsFromRoleRequest, List<RemovePoliciesFromRoleResponse>>
 {
     private readonly DeerliciousContext _context;
 
@@ -24,10 +24,10 @@ public sealed class
     {
         Delete("api/permissions/{roleId}");
         Roles(SeedData.SuperAdminRoleName);
-        Options(x => x.WithTags("Policies"));
+        Options(x => x.WithTags("Permissions"));
     }
 
-    public override async Task HandleAsync(RemovePoliciesFromRoleRequest request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(RemovePermissionsFromRoleRequest request, CancellationToken cancellationToken)
     {
         var roleId = Route<Guid>("roleId", isRequired: true);
 
@@ -60,7 +60,7 @@ public sealed class
     }
 }
 
-public sealed class RemovePermissionFromRoleValidator : Validator<RemovePoliciesFromRoleRequest>
+public sealed class RemovePermissionFromRoleValidator : Validator<RemovePermissionsFromRoleRequest>
 {
     public RemovePermissionFromRoleValidator()
     {
