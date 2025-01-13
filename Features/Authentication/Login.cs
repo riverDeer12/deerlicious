@@ -44,12 +44,12 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
         var roles = user.Roles.Select(r => r.Role.Name).ToList();
 
-        var isSuperAdmin = roles.Contains(nameof(SeedData.SuperAdminRoleName));
+        var isSuperAdmin = roles.Contains(SeedData.SuperAdminRoleName);
 
         var permissions = await GetUserPermissions(isSuperAdmin, user.Roles, cancellationToken);
 
         var jwtToken = JwtBearer.CreateToken(
-            o =>
+            options: o =>
             {
                 o.SigningKey = _configuration["JWTSecretKey"] ?? string.Empty;
                 o.ExpireAt = DateTime.Now.AddDays(1);
