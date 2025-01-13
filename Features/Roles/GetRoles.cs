@@ -29,7 +29,10 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
         var roles = await _context.Roles.ToListAsync(cancellationToken: cancellationToken);
 
         if (roles.Count is 0)
-            await SendAsync([], cancellation: cancellationToken);
+                {
+        await SendAsync([], cancellation: cancellationToken);
+        return;
+    }
 
         await SendAsync(roles
             .Select(x => new GetRoleResponse(x.Id, x.Name, x.Description))

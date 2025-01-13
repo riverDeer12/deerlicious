@@ -28,7 +28,10 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
         var administrators = await _context.Administrators.ToListAsync(cancellationToken: cancellationToken);
 
         if (administrators.Count is 0)
-            await SendAsync([], cancellation: cancellationToken);
+                {
+        await SendAsync([], cancellation: cancellationToken);
+        return;
+    }
 
         await SendAsync(administrators
             .Select(x => new GetAdministratorResponse(x.FullName))

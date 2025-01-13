@@ -28,7 +28,10 @@ public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetCon
         var contributors = await _context.Contributors.ToListAsync(cancellationToken);
 
         if (contributors.Count is 0) 
-            await SendAsync([], cancellation: cancellationToken);
+                {
+        await SendAsync([], cancellation: cancellationToken);
+        return;
+    }
         
         await SendAsync(contributors.Select(x => 
             new GetContributorResponse(x.Id, x.FullName)).ToList(), cancellation: cancellationToken);

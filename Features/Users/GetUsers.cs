@@ -30,7 +30,10 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserRespon
             .ThenInclude(userRole => userRole.Role).ToListAsync(cancellationToken);
 
         if (users.Count is 0)
-            await SendAsync([], cancellation: cancellationToken);
+                {
+        await SendAsync([], cancellation: cancellationToken);
+        return;
+    }
 
         await SendAsync(users.Select(x =>
                     new GetUserResponse(

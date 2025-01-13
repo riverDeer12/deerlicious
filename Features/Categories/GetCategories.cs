@@ -28,7 +28,10 @@ public class GetCategoriesEndpoint : EndpointWithoutRequest<List<GetCategoryResp
         var categories = await _context.Categories.ToListAsync(cancellationToken: cancellationToken);
 
         if (categories.Count is 0)
+        {
             await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
 
         await SendAsync(categories
             .Select(x => new GetCategoryResponse(x.Id, x.Name, x.Description))

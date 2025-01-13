@@ -27,7 +27,10 @@ public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>
     {
         var recipes = await _context.Recipes.ToListAsync(cancellationToken: cancellationToken);
 
-        if (recipes.Count is 0) await SendAsync([], cancellation: cancellationToken);
+        if (recipes.Count is 0)     {
+        await SendAsync([], cancellation: cancellationToken);
+        return;
+    }
         
         await SendAsync(recipes
             .Select(x => new GetRecipeResponse(x.Id, x.Title, x.Content))
