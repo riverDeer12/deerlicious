@@ -1,0 +1,18 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{domain}}/api/categories/2278055E-E331-4695-2293-08DD30BDBD1E
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Deserts",
+    "description": "Deerlicious deserts."
+  }
+}

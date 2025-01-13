@@ -1,0 +1,22 @@
+meta {
+  name: Create Recipe
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{domain}}/api/recipes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Chocolate Cake",
+    "content": "Simple chocolate cake.",
+      "categories": [
+      "",
+      ""
+    ]
+  }
+}
