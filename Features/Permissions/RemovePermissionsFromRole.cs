@@ -44,10 +44,10 @@ public sealed class
         if (request.PermissionIds.Count != permissions.Count)
             ThrowError(ErrorMessages.NotFound);
 
-        var rolePolicies = _context.RolePolicies
+        var rolePolicies = _context.RolePermissions
             .Where(x => x.RoleId == roleId && request.PermissionIds.Contains(x.PermissionId)).ToList();
 
-        _context.RolePolicies.RemoveRange(rolePolicies);
+        _context.RolePermissions.RemoveRange(rolePolicies);
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 

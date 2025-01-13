@@ -17,7 +17,7 @@ public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissi
 
         builder
             .HasOne(bc => bc.Role)
-            .WithMany(c => c.Policies)
+            .WithMany(c => c.Permissions)
             .HasForeignKey(bc => bc.RoleId);
     }
 }

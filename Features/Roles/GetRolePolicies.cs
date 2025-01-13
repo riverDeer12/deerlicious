@@ -7,11 +7,11 @@ namespace Deerlicious.API.Features.Roles;
 
 public sealed record GetRolePermissionResponse(Guid PermissionId, string Name, string Description);
 
-public sealed class GetRolePoliciesEndpoint : EndpointWithoutRequest<List<GetRolePermissionResponse>>
+public sealed class GetRolePermissionsEndpoint : EndpointWithoutRequest<List<GetRolePermissionResponse>>
 {
     private readonly DeerliciousContext _context;
 
-    public GetRolePoliciesEndpoint(DeerliciousContext context)
+    public GetRolePermissionsEndpoint(DeerliciousContext context)
     {
         _context = context;
     }
@@ -27,16 +27,16 @@ public sealed class GetRolePoliciesEndpoint : EndpointWithoutRequest<List<GetRol
     {
         var roleId = Route<Guid>("id", isRequired: true);
 
-        var rolePolicies = await _context.RolePolicies
+        var rolePermissions = await _context.RolePermissions
             .Where(x => x.RoleId == roleId)
             .Include(x => x.Role)
             .Include(x => x.Permission)
             .ToListAsync(cancellationToken: cancellationToken);
 
-        if (rolePolicies.Count == 0)
+        if (rolePermissions.Count == 0)
             await SendAsync([], cancellation: cancellationToken);
 
-        await SendAsync(rolePolicies
+        await SendAsync(rolePermissions
             .Select(x => new GetRolePermissionResponse(x.PermissionId, x.Permission.Name, x.Permission.Description))
             .ToList(), cancellation: cancellationToken);
     }

@@ -23,7 +23,7 @@ public class DeerliciousContext : DbContext
     
     public DbSet<RecipeCategory> RecipeCategories { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<RolePermission> RolePolicies { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<User> Users { get; set; }
 
     public DbSet<UserRole> UserRoles { get; set; }
@@ -88,9 +88,9 @@ public class DeerliciousContext : DbContext
             LastName = SeedData.SuperAdminLastName
         });
 
-        // Seed Policies
+        // Seed Permissions
 
-        var policies = UserPermissions.GetUserPermissions()
+        var permissions = UserPermissions.GetUserPermissions()
             .Select(permission => new Permission
             {
                 Id = permission.Id,
@@ -100,7 +100,7 @@ public class DeerliciousContext : DbContext
             })
             .ToList();
 
-        modelBuilder.Entity<Permission>().HasData(policies);
+        modelBuilder.Entity<Permission>().HasData(permissions);
 
         base.OnModelCreating(modelBuilder);
     }

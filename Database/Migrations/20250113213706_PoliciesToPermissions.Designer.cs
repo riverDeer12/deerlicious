@@ -4,6 +4,7 @@ using Deerlicious.API.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deerlicious.API.Database.Migrations
 {
     [DbContext(typeof(DeerliciousContext))]
-    partial class DeerliciousContextModelSnapshot : ModelSnapshot
+    [Migration("20250113213706_PoliciesToPermissions")]
+    partial class PoliciesToPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,13 +72,13 @@ namespace Deerlicious.API.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8e2385a9-2ebf-4937-bf29-7ff6bcb997ea"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4850), new TimeSpan(0, 1, 0, 0, 0)),
+                            Id = new Guid("4d5c05ff-d869-4594-a50a-da9c54c355ea"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(9080), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             FirstName = "Super",
                             IsDeleted = false,
                             LastName = "Admin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4850), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(9080), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserId = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
@@ -370,12 +373,12 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("69a4116d-b1bd-4f0b-b6a7-a13bb5eb639f"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4770), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(9030), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Description = "Role with all access.",
                             IsDeleted = false,
                             Name = "SuperAdmin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4770), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(9030), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb")
                         });
                 });
@@ -392,7 +395,7 @@ namespace Deerlicious.API.Database.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePolicies");
                 });
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.User", b =>
@@ -445,13 +448,13 @@ namespace Deerlicious.API.Database.Migrations
                         new
                         {
                             Id = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4240), new TimeSpan(0, 1, 0, 0, 0)),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(8550), new TimeSpan(0, 1, 0, 0, 0)),
                             CreatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             Email = "superadmin@mail.com",
                             EmailConfirmed = true,
                             IsDeleted = false,
                             Password = "685D8127992F8280BB94EC3CF3F2B4DA35904A8AE09AC07AF245D1888A620FAF97DE8084F4141D5F2107BEB09FC7F57073EAE8746A000A0DFFD507C79ED055A3",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 40, 54, 252, DateTimeKind.Unspecified).AddTicks(4290), new TimeSpan(0, 1, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 1, 13, 22, 37, 6, 412, DateTimeKind.Unspecified).AddTicks(8600), new TimeSpan(0, 1, 0, 0, 0)),
                             UpdatedBy = new Guid("5604e898-cd94-476b-8b86-9aa3a87cc9bb"),
                             UserName = "superadmin"
                         });
@@ -529,7 +532,7 @@ namespace Deerlicious.API.Database.Migrations
                         .IsRequired();
 
                     b.HasOne("Deerlicious.API.Database.Entities.Role", "Role")
-                        .WithMany("Permissions")
+                        .WithMany("Policies")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -575,7 +578,7 @@ namespace Deerlicious.API.Database.Migrations
 
             modelBuilder.Entity("Deerlicious.API.Database.Entities.Role", b =>
                 {
-                    b.Navigation("Permissions");
+                    b.Navigation("Policies");
 
                     b.Navigation("Users");
                 });
