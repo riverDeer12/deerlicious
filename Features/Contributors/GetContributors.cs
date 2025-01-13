@@ -19,7 +19,7 @@ public sealed class GetContributorsEndpoint : EndpointWithoutRequest<List<GetCon
     public override void Configure()
     {
         Get("api/contributors");
-        Policies(nameof(UserPolicies.CanGetContributors));
+        Permissions(nameof(UserPermissions.CanGetContributors));
         Options(x => x.WithTags("Contributors"));
     }
 

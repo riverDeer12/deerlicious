@@ -20,7 +20,7 @@ public class GetCategoriesEndpoint : EndpointWithoutRequest<List<GetCategoryResp
     public override void Configure()
     {
         Get("api/categories");
-        Policies(nameof(UserPolicies.CanGetCategories));
+        Permissions(nameof(UserPermissions.CanGetCategories));
         Options(x => x.WithTags("Categories"));
     }
 

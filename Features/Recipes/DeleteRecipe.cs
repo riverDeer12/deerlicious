@@ -19,7 +19,7 @@ public sealed class DeleteRecipeEndpoint : EndpointWithoutRequest<DeleteRecipeRe
     public override void Configure()
     {
         Delete("api/recipes/{id}");
-        Policies(nameof(UserPolicies.CanDeleteRecipe));
+        Permissions(nameof(UserPermissions.CanDeleteRecipe));
         Options(x => x.WithTags("Recipes"));
     }
 

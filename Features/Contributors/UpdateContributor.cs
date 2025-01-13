@@ -22,7 +22,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
     public override void Configure()
     {
         Put("api/contributors/{id}");
-        Policies(nameof(UserPolicies.CanUpdateContributor));
+        Permissions(nameof(UserPermissions.CanUpdateContributor));
         Options(x => x.WithTags("Contributors"));
     }
 

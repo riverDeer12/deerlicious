@@ -1,13 +1,13 @@
 namespace Deerlicious.API.Database.Entities;
 
-public class RolePolicy
+public class RolePermission
 {
     public Guid RoleId { get; set; }
     
     public Role Role { get; set; }
     
-    public Guid PolicyId { get; set; }
+    public Guid PermissionId { get; set; }
     
-    public Policy Policy { get; set; }
+    public Permission Permission { get; set; }
 
 }

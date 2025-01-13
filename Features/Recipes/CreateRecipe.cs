@@ -23,7 +23,7 @@ public sealed class CreateRecipeEndpoint : Endpoint<CreateRecipeRequest, CreateR
     public override void Configure()
     {
         Post("api/recipes");
-        Policies(nameof(UserPolicies.CanCreateRecipe));
+        Permissions(nameof(UserPermissions.CanCreateRecipe));
         Options(x => x.WithTags("Recipes"));
     }
 

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Deerlicious.API.Database.Configurations;
 
-public class PolicyConfiguration : IEntityTypeConfiguration<Policy>
+public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
 {
-    public void Configure(EntityTypeBuilder<Policy> builder)
+    public void Configure(EntityTypeBuilder<Permission> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Name).HasMaxLength(200);

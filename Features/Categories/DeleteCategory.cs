@@ -19,7 +19,7 @@ public sealed class DeleteCategoryEndpoint : EndpointWithoutRequest<DeleteCatego
     public override void Configure()
     {
         Delete("api/categories/{id}");
-        Policies(nameof(UserPolicies.CanDeleteCategory));
+        Permissions(nameof(UserPermissions.CanDeleteCategory));
         Options(x => x.WithTags("Categories"));
     }
 

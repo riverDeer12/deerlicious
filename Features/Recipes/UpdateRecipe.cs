@@ -22,7 +22,7 @@ public sealed class UpdateRecipeEndpoint : Endpoint<UpdateRecipeRequest, UpdateR
     public override void Configure()
     {
         Put("api/recipes/{id}");
-        Roles(nameof(UserPolicies.CanUpdateRecipe));
+        Roles(nameof(UserPermissions.CanUpdateRecipe));
         Options(x => x.WithTags("Recipes"));
     }
 

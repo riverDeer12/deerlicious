@@ -19,7 +19,7 @@ public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>
     public override void Configure()
     {
         Get("api/recipes");
-        Policies(nameof(UserPolicies.CanGetRecipes));
+        Permissions(nameof(UserPermissions.CanGetRecipes));
         Options(x => x.WithTags("Recipes"));
     }
 

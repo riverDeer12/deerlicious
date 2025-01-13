@@ -23,7 +23,7 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
     public override void Configure()
     {
         Put("api/categories/{id}");
-        Policies(nameof(UserPolicies.CanUpdateCategory));
+        Permissions(nameof(UserPermissions.CanUpdateCategory));
         Options(x => x.WithTags("Categories"));
     }
 

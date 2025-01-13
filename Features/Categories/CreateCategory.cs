@@ -22,7 +22,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
     public override void Configure()
     {
         Post("api/categories");
-        Policies(nameof(UserPolicies.CanCreateCategory));
+        Permissions(nameof(UserPermissions.CanCreateCategory));
         Options(x => x.WithTags("Categories"));
     }
 

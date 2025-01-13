@@ -19,7 +19,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
     public override void Configure()
     {
         Delete("api/contributors/{id}");
-        Policies(nameof(UserPolicies.CanDeleteContributor));
+        Permissions(nameof(UserPermissions.CanDeleteContributor));
         Options(x => x.WithTags("Contributors"));
     }
 

@@ -23,7 +23,7 @@ public sealed class CreateContributorEndpoint : Endpoint<CreateContributorReques
     public override void Configure()
     {
         Post("api/contributors");
-        Policies(nameof(UserPolicies.CanCreateContributor));
+        Permissions(nameof(UserPermissions.CanCreateContributor));
         Options(x => x.WithTags("Contributors"));
     }
 

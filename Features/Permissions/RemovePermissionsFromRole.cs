@@ -4,11 +4,11 @@ using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Deerlicious.API.Features.Policies;
+namespace Deerlicious.API.Features.Permissions;
 
-public sealed record RemovePoliciesFromRoleRequest(List<Guid> PolicyIds);
+public sealed record RemovePoliciesFromRoleRequest(List<Guid> PermissionIds);
 
-public sealed record RemovePoliciesFromRoleResponse(Guid PolicyId);
+public sealed record RemovePoliciesFromRoleResponse(Guid PermissionId);
 
 public sealed class
     RemovePoliciesFromRoleEndpoint : Endpoint<RemovePoliciesFromRoleRequest, List<RemovePoliciesFromRoleResponse>>
@@ -22,7 +22,7 @@ public sealed class
 
     public override void Configure()
     {
-        Delete("api/policies/{roleId}");
+        Delete("api/permissions/{roleId}");
         Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Policies"));
     }
@@ -37,15 +37,15 @@ public sealed class
         if (role is null)
             ThrowError(ErrorMessages.NotFound);
 
-        var policies = _context.Policies
-            .Where(x => request.PolicyIds.Contains(x.Id))
+        var permissions = _context.Permissions
+            .Where(x => request.PermissionIds.Contains(x.Id))
             .ToList();
 
-        if (request.PolicyIds.Count != policies.Count)
+        if (request.PermissionIds.Count != permissions.Count)
             ThrowError(ErrorMessages.NotFound);
 
         var rolePolicies = _context.RolePolicies
-            .Where(x => x.RoleId == roleId && request.PolicyIds.Contains(x.PolicyId)).ToList();
+            .Where(x => x.RoleId == roleId && request.PermissionIds.Contains(x.PermissionId)).ToList();
 
         _context.RolePolicies.RemoveRange(rolePolicies);
 
@@ -55,15 +55,15 @@ public sealed class
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(rolePolicies
-            .Select(x => new RemovePoliciesFromRoleResponse(x.PolicyId))
+            .Select(x => new RemovePoliciesFromRoleResponse(x.PermissionId))
             .ToList(), cancellation: cancellationToken);
     }
 }
 
-public sealed class RemovePolicyFromRoleValidator : Validator<RemovePoliciesFromRoleRequest>
+public sealed class RemovePermissionFromRoleValidator : Validator<RemovePoliciesFromRoleRequest>
 {
-    public RemovePolicyFromRoleValidator()
+    public RemovePermissionFromRoleValidator()
     {
-        RuleFor(x => x.PolicyIds).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.PermissionIds).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

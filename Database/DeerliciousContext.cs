@@ -18,12 +18,12 @@ public class DeerliciousContext : DbContext
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
-    public DbSet<Policy> Policies { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
     
     public DbSet<RecipeCategory> RecipeCategories { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<RolePolicy> RolePolicies { get; set; }
+    public DbSet<RolePermission> RolePolicies { get; set; }
     public DbSet<User> Users { get; set; }
 
     public DbSet<UserRole> UserRoles { get; set; }
@@ -90,17 +90,17 @@ public class DeerliciousContext : DbContext
 
         // Seed Policies
 
-        var policies = UserPolicies.GetUserPolicies()
-            .Select(policy => new Policy
+        var policies = UserPermissions.GetUserPermissions()
+            .Select(permission => new Permission
             {
-                Id = policy.Id,
-                Name = policy.Name,
-                Description = policy.Description,
-                Category = policy.Category
+                Id = permission.Id,
+                Name = permission.Name,
+                Description = permission.Description,
+                Category = permission.Category
             })
             .ToList();
 
-        modelBuilder.Entity<Policy>().HasData(policies);
+        modelBuilder.Entity<Permission>().HasData(policies);
 
         base.OnModelCreating(modelBuilder);
     }
