@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Permissions;
 
-public sealed record AddPermissionsToRoleRequest(List<Guid> PermissionIds);
+public sealed record AddPermissionsToRoleRequest(List<Guid> Permissions);
 
 public sealed record AddPermissionsToRoleResponse(Guid PermissionId);
 
@@ -39,10 +39,10 @@ public sealed class AddPermissionsToRoleEndpoint : Endpoint<AddPermissionsToRole
             ThrowError(ErrorMessages.NotFound);
 
         var permissions = _context.Permissions
-            .Where(x => request.PermissionIds.Contains(x.Id))
+            .Where(x => request.Permissions.Contains(x.Id))
             .ToList();
 
-        if (request.PermissionIds.Count != permissions.Count)
+        if (request.Permissions.Count != permissions.Count)
             ThrowError(ErrorMessages.NotFound);
 
         var newRolePermissions =
@@ -58,10 +58,10 @@ public sealed class AddPermissionsToRoleEndpoint : Endpoint<AddPermissionsToRole
     }
 }
 
-public sealed class AddRoleToPermissionValidator : Validator<AddPermissionsToRoleRequest>
+public sealed class AddPermissionsToRoleValidator : Validator<AddPermissionsToRoleRequest>
 {
-    public AddRoleToPermissionValidator()
+    public AddPermissionsToRoleValidator()
     {
-        RuleFor(x => x.PermissionIds).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Permissions).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

@@ -1,18 +1,18 @@
 meta {
-  name: Remove Policy From Role
+  name: Remove Permission From Role
   type: http
   seq: 2
 }
 
 delete {
-  url: {{domain}}/api/policies/2278055E-E331-4695-2293-08DD30BDBD1E
+  url: {{domain}}/api/permissions/2278055E-E331-4695-2293-08DD30BDBD1E
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "policyIds": [
+    "permissions": [
       "74253B8E-6B5D-48F4-BECB-02CC909DE4BC",
       "2F54D3F8-4F36-45F9-914D-12231B9C7A77",
       "D07047E2-9C97-4F86-BB69-46699F9935B1",
