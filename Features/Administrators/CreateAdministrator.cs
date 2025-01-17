@@ -39,7 +39,7 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result > 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateAdministratorResponse(newAdministrator.Id, newAdministrator.FullName),

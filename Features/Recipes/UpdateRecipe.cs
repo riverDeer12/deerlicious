@@ -44,7 +44,7 @@ public sealed class UpdateRecipeEndpoint : Endpoint<UpdateRecipeRequest, UpdateR
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result > 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new UpdateRecipeResponse(recipe.Id, recipe.Title), cancellation: cancellationToken);

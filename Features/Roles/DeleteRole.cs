@@ -41,7 +41,7 @@ public class DeleteRoleEndpoint : EndpointWithoutRequest<DeleteRoleResponse>
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result > 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new DeleteRoleResponse(role.Id, role.Name), cancellation: cancellationToken);

@@ -45,7 +45,7 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result > 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new UpdateCategoryResponse(category.Id, category.Name, category.Description),

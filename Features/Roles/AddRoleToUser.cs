@@ -48,7 +48,7 @@ public sealed class AddRoleToUserEndpoint : Endpoint<AddRoleToUserRequest, AddRo
         
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result is not 1)
+        if (result > 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new AddRoleToUserResponse(role.Id, user.Id),
