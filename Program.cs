@@ -3,6 +3,7 @@ using Deerlicious.API.Services;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,9 @@ builder.Services.AddDbContext<DeerliciousContext>(options =>
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+builder.Host.UseSerilog((context, config) 
+    => config.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 app.UseCors(corsPolicyBuilder => corsPolicyBuilder
@@ -44,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
