@@ -40,7 +40,7 @@ public class DeleteAdministratorEndpoint : EndpointWithoutRequest<DeleteContribu
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result > 0)
+        if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new DeleteContributorResponse(contributor.Id, contributor.FullName), cancellation: cancellationToken);

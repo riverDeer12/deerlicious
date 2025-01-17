@@ -1,4 +1,5 @@
 using Deerlicious.API.Database;
+using Deerlicious.API.Middlewares;
 using Deerlicious.API.Services;
 using FastEndpoints;
 using FastEndpoints.Security;
@@ -50,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
+
+app.UseMiddleware<AdditionalRequestLogging>();
 
 app.UseHttpsRedirection();
 

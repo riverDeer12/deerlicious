@@ -34,7 +34,7 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
         
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result > 0)
+        if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateRoleResponse(newRole.Id, newRole.Name, newRole.Description),

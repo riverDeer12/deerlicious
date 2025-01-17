@@ -34,7 +34,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result > 0)
+        if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateCategoryResponse(newCategory.Id, newCategory.Name, newCategory.Description),

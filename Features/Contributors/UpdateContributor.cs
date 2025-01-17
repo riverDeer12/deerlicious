@@ -44,7 +44,7 @@ public class UpdateContributorEndpoint : Endpoint<UpdateContributorRequest, Upda
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
-        if (result > 0)
+        if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new UpdateContributorResponse(contributor.Id, contributor.FullName),
