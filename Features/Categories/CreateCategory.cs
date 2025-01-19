@@ -1,8 +1,10 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
+using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Categories;
 
@@ -14,9 +16,12 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 {
     private readonly DeerliciousContext _context;
 
-    public CreateCategoryEndpoint(DeerliciousContext context)
+    private readonly ICategoryService _categoryService;
+
+    public CreateCategoryEndpoint(DeerliciousContext context, ICategoryService categoryService)
     {
         _context = context;
+        _categoryService = categoryService;
     }
 
     public override void Configure()
@@ -28,6 +33,16 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
     public override async Task HandleAsync(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
+        var isCategoryUnique = _categoryService.IsCategoryUnique(request.Name, out var similarCategory);
+
+        if (!isCategoryUnique)
+        {
+            await SendAsync(new CreateCategoryResponse(similarCategory.Id, similarCategory.Name, 
+                    similarCategory.Description),
+                cancellation: cancellationToken);
+            return;
+        }
+
         var newCategory = Category.Init(request.Name, request.Description);
 
         _context.Categories.Add(newCategory);

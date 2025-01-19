@@ -22,7 +22,7 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserRespon
         Roles(SeedData.SuperAdminRoleName);
         Options(x => x.WithTags("Users"));
     }
-    
+
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var users = await _context.Users
@@ -30,10 +30,10 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserRespon
             .ThenInclude(userRole => userRole.Role).ToListAsync(cancellationToken);
 
         if (users.Count is 0)
-                {
-        await SendAsync([], cancellation: cancellationToken);
-        return;
-    }
+        {
+            await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
 
         await SendAsync(users.Select(x =>
                     new GetUserResponse(

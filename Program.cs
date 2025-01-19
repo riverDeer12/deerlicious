@@ -27,6 +27,7 @@ builder.Services.AddDbContext<DeerliciousContext>(options =>
         .EnableSensitiveDataLogging());
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Host.UseSerilog((context, config) 
     => config.ReadFrom.Configuration(context.Configuration));

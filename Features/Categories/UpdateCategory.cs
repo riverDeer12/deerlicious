@@ -1,6 +1,8 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Features.Roles;
+using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,12 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
 {
     private readonly DeerliciousContext _context;
 
-    public UpdateCategoryEndpoint(DeerliciousContext context)
+    private readonly ICategoryService _categoryService;
+
+    public UpdateCategoryEndpoint(DeerliciousContext context, ICategoryService categoryService)
     {
         _context = context;
+        _categoryService = categoryService;
     }
 
     public override void Configure()
@@ -37,6 +42,17 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
 
         if (category is null)
             ThrowError(ErrorMessages.NotFound);
+        
+
+        var isCategoryUnique = _categoryService.IsCategoryUnique(request.Name, out var similarCategory);
+
+        if (!isCategoryUnique)
+        {
+            await SendAsync(new UpdateCategoryResponse(similarCategory.Id, similarCategory.Name, 
+                    similarCategory.Description),
+                cancellation: cancellationToken);
+            return;
+        }
 
         category.Name = request.Name;
         category.Description = request.Description;
