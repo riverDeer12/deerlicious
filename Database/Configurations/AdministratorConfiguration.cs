@@ -10,5 +10,6 @@ public class AdministratorConfiguration : IEntityTypeConfiguration<Administrator
     {
         builder.Property(e => e.FirstName).HasMaxLength(200);
         builder.Property(e => e.LastName).HasMaxLength(200);
+        builder.ToTable("Administrators", c => c.IsTemporal());
     }
 }

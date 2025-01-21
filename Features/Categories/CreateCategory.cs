@@ -4,7 +4,6 @@ using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Categories;
 
