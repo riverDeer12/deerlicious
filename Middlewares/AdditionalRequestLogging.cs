@@ -8,7 +8,6 @@ public class AdditionalRequestLogging
     private readonly ILogger<AdditionalRequestLogging> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-
     public AdditionalRequestLogging(RequestDelegate next, ILogger<AdditionalRequestLogging> logger,
         IHttpContextAccessor httpContextAccessor)
     {

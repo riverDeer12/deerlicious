@@ -5,7 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Categories;
 
-public sealed record GetCategoryResponse(Guid Id, string Name, string Description);
+public sealed record GetCategoryResponse(
+    Guid Id,
+    string Name,
+    string Description,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    bool IsDeleted);
 
 public class GetCategoriesEndpoint : EndpointWithoutRequest<List<GetCategoryResponse>>
 {
@@ -34,7 +40,7 @@ public class GetCategoriesEndpoint : EndpointWithoutRequest<List<GetCategoryResp
         }
 
         await SendAsync(categories
-            .Select(x => new GetCategoryResponse(x.Id, x.Name, x.Description))
+            .Select(x => new GetCategoryResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
             .ToList(), cancellation: cancellationToken);
     }
 }

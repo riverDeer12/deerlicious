@@ -5,7 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
 
-public sealed record GetAdministratorResponse(string FullName);
+public sealed record GetAdministratorResponse(
+    string FirstName,
+    string LastName,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    bool IsDeleted);
 
 public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetAdministratorResponse>>
 {
@@ -15,7 +20,7 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
     {
         _context = context;
     }
-    
+
     public override void Configure()
     {
         Get("api/administrators");
@@ -28,13 +33,13 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
         var administrators = await _context.Administrators.ToListAsync(cancellationToken: cancellationToken);
 
         if (administrators.Count is 0)
-                {
-        await SendAsync([], cancellation: cancellationToken);
-        return;
-    }
+        {
+            await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
 
         await SendAsync(administrators
-            .Select(x => new GetAdministratorResponse(x.FullName))
+            .Select(x => new GetAdministratorResponse(x.FirstName, x.LastName, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
             .ToList(), cancellation: cancellationToken);
     }
 }

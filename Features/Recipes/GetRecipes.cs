@@ -5,7 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Recipes;
 
-public sealed record GetRecipeResponse(Guid Id, string Title, string Content);
+public sealed record GetRecipeResponse(
+    Guid Id,
+    string Title,
+    string Content,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    bool IsDeleted);
 
 public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>>
 {
@@ -27,13 +33,14 @@ public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>
     {
         var recipes = await _context.Recipes.ToListAsync(cancellationToken: cancellationToken);
 
-        if (recipes.Count is 0)     {
-        await SendAsync([], cancellation: cancellationToken);
-        return;
-    }
-        
+        if (recipes.Count is 0)
+        {
+            await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
+
         await SendAsync(recipes
-            .Select(x => new GetRecipeResponse(x.Id, x.Title, x.Content))
+            .Select(x => new GetRecipeResponse(x.Id, x.Title, x.Content, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
             .ToList(), cancellation: cancellationToken);
     }
 }

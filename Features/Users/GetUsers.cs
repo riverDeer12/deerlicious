@@ -5,7 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Users;
 
-public sealed record GetUserResponse(Guid Id, string Username, string Email, List<string> Roles);
+public sealed record GetUserResponse(
+    Guid Id,
+    string Username,
+    string Email,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    bool IsDeleted,
+    List<string> Roles);
 
 public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserResponse>>
 {
@@ -40,6 +47,9 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserRespon
                         x.Id,
                         x.UserName,
                         x.Email,
+                        x.CreatedAt,
+                        x.UpdatedAt,
+                        x.IsDeleted,
                         x.Roles.Select(userRole => userRole.Role.Name).ToList()))
                 .ToList(),
             cancellation: cancellationToken);
