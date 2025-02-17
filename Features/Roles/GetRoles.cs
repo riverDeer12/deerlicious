@@ -6,7 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Roles;
 
-public sealed record GetRoleResponse(Guid RoleId, string RoleName, string Description);
+public sealed record GetRoleResponse(
+    Guid Id,
+    string Name,
+    string Description,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    bool IsDeleted);
 
 public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleResponse>>
 {
@@ -16,7 +22,7 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
     {
         _context = context;
     }
-    
+
     public override void Configure()
     {
         Get("api/roles");
@@ -29,13 +35,13 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
         var roles = await _context.Roles.ToListAsync(cancellationToken: cancellationToken);
 
         if (roles.Count is 0)
-                {
-        await SendAsync([], cancellation: cancellationToken);
-        return;
-    }
+        {
+            await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
 
         await SendAsync(roles
-            .Select(x => new GetRoleResponse(x.Id, x.Name, x.Description))
+            .Select(x => new GetRoleResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
             .ToList(), cancellation: cancellationToken);
     }
 }
