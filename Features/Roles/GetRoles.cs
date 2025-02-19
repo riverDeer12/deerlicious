@@ -1,8 +1,7 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
-using Deerlicious.API.Database.Entities;
-using Deerlicious.API.Features.Administrators;
 using Deerlicious.API.Features.Permissions;
+using Deerlicious.API.Features.Users;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +14,12 @@ public sealed record GetRoleResponse(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     bool IsDeleted,
-    List<GetPermissionResponse> Permissions);
+    List<GetPermissionResponse> Permissions,
+    List<RoleUserDto> Users);
+
+public sealed record RoleUserDto(
+    Guid Id,
+    string Username);
 
 public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleResponse>>
 {
@@ -37,6 +41,8 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
     {
         var roles = await _context
             .Roles
+            .Include(role => role.Users)
+            .ThenInclude(userRole => userRole.User)
             .Include(role => role.Permissions)
             .ThenInclude(rolePermission => rolePermission.Permission)
             .ToListAsync(cancellationToken: cancellationToken);
@@ -53,12 +59,18 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
         {
             var rolePermissions = role.Permissions.Select(x => x.Permission).ToList();
 
+            var roleUsers = role.Users.Select(x => x.User).ToList();
+
             var permissionsResponse = rolePermissions
                 .Select(x => new GetPermissionResponse(x.Id, x.Name, x.Description, x.Category))
                 .ToList();
 
+            var usersResponse = roleUsers
+                .Select(x => new RoleUserDto(x.Id, x.UserName))
+                .ToList();
+
             var roleResponse = new GetRoleResponse(role.Id, role.Name, role.Description, role.CreatedAt, role.UpdatedAt,
-                role.IsDeleted, permissionsResponse);
+                role.IsDeleted, permissionsResponse, usersResponse);
 
             response.Add(roleResponse);
         }
