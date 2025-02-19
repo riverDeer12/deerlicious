@@ -34,10 +34,10 @@ public sealed class GetRolePermissionsEndpoint : EndpointWithoutRequest<List<Get
             .ToListAsync(cancellationToken: cancellationToken);
 
         if (rolePermissions.Count == 0)
-                {
-        await SendAsync([], cancellation: cancellationToken);
-        return;
-    }
+        {
+            await SendAsync([], cancellation: cancellationToken);
+            return;
+        }
 
         await SendAsync(rolePermissions
             .Select(x => new GetRolePermissionResponse(x.PermissionId, x.Permission.Name, x.Permission.Description))

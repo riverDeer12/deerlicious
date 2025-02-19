@@ -1,6 +1,8 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Features.Administrators;
+using Deerlicious.API.Features.Permissions;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +14,8 @@ public sealed record GetRoleResponse(
     string Description,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    bool IsDeleted);
+    bool IsDeleted,
+    List<GetPermissionResponse> Permissions);
 
 public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleResponse>>
 {
@@ -32,7 +35,11 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var roles = await _context.Roles.ToListAsync(cancellationToken: cancellationToken);
+        var roles = await _context
+            .Roles
+            .Include(role => role.Permissions)
+            .ThenInclude(rolePermission => rolePermission.Permission)
+            .ToListAsync(cancellationToken: cancellationToken);
 
         if (roles.Count is 0)
         {
@@ -40,8 +47,22 @@ public sealed class GetRolesEndpoint : EndpointWithoutRequest<List<GetRoleRespon
             return;
         }
 
-        await SendAsync(roles
-            .Select(x => new GetRoleResponse(x.Id, x.Name, x.Description, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
-            .ToList(), cancellation: cancellationToken);
+        var response = new List<GetRoleResponse>();
+
+        foreach (var role in roles)
+        {
+            var rolePermissions = role.Permissions.Select(x => x.Permission).ToList();
+
+            var permissionsResponse = rolePermissions
+                .Select(x => new GetPermissionResponse(x.Id, x.Name, x.Description, x.Category))
+                .ToList();
+
+            var roleResponse = new GetRoleResponse(role.Id, role.Name, role.Description, role.CreatedAt, role.UpdatedAt,
+                role.IsDeleted, permissionsResponse);
+
+            response.Add(roleResponse);
+        }
+
+        await SendAsync(response, cancellation: cancellationToken);
     }
 }

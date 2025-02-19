@@ -1,12 +1,17 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
+using Deerlicious.API.Features.Permissions;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Roles;
 
-public sealed record UpdateRoleRequest(string RoleName, string Description);
+public sealed record UpdateRoleRequest(
+    string Name,
+    string Description,
+    List<GetPermissionResponse> Permissions);
 
 public sealed record UpdateRoleResponse(Guid Id, string FullName, string Description);
 
@@ -37,12 +42,23 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
         if (role is null)
             ThrowError(ErrorMessages.NotFound);
 
-        role.Name = request.RoleName;
+        role.Name = request.Name;
         role.Description = request.Description;
+        
+        role.Permissions = new List<RolePermission>(
+            request.Permissions.Select(permission => new RolePermission
+            {
+                RoleId = role.Id,
+                PermissionId = permission.Id
+            }));
+        
+        await _context.RolePermissions
+            .Where(rolePermission => rolePermission.RoleId == role.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
         _context.Roles.Update(role);
 
-        var result = await _context.SaveChangesAsync(cancellationToken);
+        var result = await _context.SaveChangesAsync(cancellationToken: cancellationToken);
 
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
@@ -55,6 +71,6 @@ public sealed class UpdateRoleValidator : Validator<UpdateRoleRequest>
 {
     public UpdateRoleValidator()
     {
-        RuleFor(x => x.RoleName).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Name).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

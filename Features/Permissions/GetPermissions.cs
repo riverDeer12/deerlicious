@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Permissions;
 
-public sealed record GetPermissionResponse(Guid PermissionId, string Name, string Description, string Category);
+public sealed record GetPermissionResponse(Guid Id, string Name, string Description, string Category);
 
 public sealed class GetPermissionsEndpoint : EndpointWithoutRequest<List<GetPermissionResponse>>
 {
