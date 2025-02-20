@@ -2,6 +2,7 @@ using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
 using Deerlicious.API.Features.Permissions;
+using Deerlicious.API.Features.Users;
 using FastEndpoints;
 using FluentValidation;
 
@@ -10,7 +11,8 @@ namespace Deerlicious.API.Features.Roles;
 public sealed record CreateRoleRequest(
     string Name,
     string Description,
-    List<GetPermissionResponse> Permissions);
+    List<Guid> Permissions,
+    List<Guid> Users);
 
 public sealed record CreateRoleResponse(Guid Id, string Name, string Description);
 
@@ -41,17 +43,25 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
-        var rolePermissions = request.Permissions.Select(requestPermission => new RolePermission
+        var rolePermissions = request.Permissions.Select(permissionId => new RolePermission
         {
             RoleId = newRole.Id,
-            PermissionId = requestPermission.Id
+            PermissionId = permissionId
+        }).ToList();
+        
+        var roleUsers = request.Users.Select(userId => new UserRole
+        {
+            RoleId = newRole.Id,
+            UserId = userId
         }).ToList();
 
         _context.RolePermissions.AddRange(rolePermissions);
         
-        var permissionsResult = await _context.SaveChangesAsync(cancellationToken);
+        _context.UserRoles.AddRange(roleUsers);
+        
+        var relationsResult = await _context.SaveChangesAsync(cancellationToken);
 
-        if (permissionsResult == 0)
+        if (relationsResult == 0)
             ThrowError(ErrorMessages.SavingError);
 
         await SendAsync(new CreateRoleResponse(newRole.Id, newRole.Name, newRole.Description),
@@ -65,5 +75,6 @@ public sealed class CreateRoleValidator : Validator<CreateRoleRequest>
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.Permissions).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Users).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

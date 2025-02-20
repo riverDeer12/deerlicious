@@ -11,7 +11,7 @@ namespace Deerlicious.API.Features.Roles;
 public sealed record UpdateRoleRequest(
     string Name,
     string Description,
-    List<GetPermissionResponse> Permissions);
+    List<Guid> Permissions);
 
 public sealed record UpdateRoleResponse(Guid Id, string FullName, string Description);
 
@@ -46,10 +46,10 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
         role.Description = request.Description;
         
         role.Permissions = new List<RolePermission>(
-            request.Permissions.Select(permission => new RolePermission
+            request.Permissions.Select(permissionId => new RolePermission
             {
                 RoleId = role.Id,
-                PermissionId = permission.Id
+                PermissionId = permissionId
             }));
         
         await _context.RolePermissions

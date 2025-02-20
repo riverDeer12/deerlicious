@@ -12,7 +12,11 @@ public sealed record GetUserResponse(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     bool IsDeleted,
-    List<string> Roles);
+    List<UserRoleDto> Roles);
+
+public sealed record UserRoleDto(
+    Guid Id,
+    string Name);
 
 public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserResponse>>
 {
@@ -34,24 +38,37 @@ public sealed class GetUsersEndpoint : EndpointWithoutRequest<List<GetUserRespon
     {
         var users = await _context.Users
             .Include(userRole => userRole.Roles)
-            .ThenInclude(userRole => userRole.Role).ToListAsync(cancellationToken);
+            .ThenInclude(userRole => userRole.Role)
+            .ToListAsync(cancellationToken);
 
         if (users.Count is 0)
         {
             await SendAsync([], cancellation: cancellationToken);
             return;
         }
+        
+        var response = new List<GetUserResponse>();
 
-        await SendAsync(users.Select(x =>
-                    new GetUserResponse(
-                        x.Id,
-                        x.UserName,
-                        x.Email,
-                        x.CreatedAt,
-                        x.UpdatedAt,
-                        x.IsDeleted,
-                        x.Roles.Select(userRole => userRole.Role.Name).ToList()))
-                .ToList(),
-            cancellation: cancellationToken);
+        foreach (var user in users)
+        {
+            var userRoles = user.Roles.Select(x => x.Role).ToList();
+            
+            var rolesResponse = userRoles
+                .Select(x => new UserRoleDto(x.Id, x.Name))
+                .ToList();
+            
+            var usersResponse = new GetUserResponse(
+                user.Id,
+                user.UserName,
+                user.Email,
+                user.CreatedAt,
+                user.UpdatedAt,
+                user.IsDeleted,
+                rolesResponse);
+            
+            response.Add(usersResponse);
+        }
+
+        await SendAsync(response, cancellation: cancellationToken);
     }
 }
