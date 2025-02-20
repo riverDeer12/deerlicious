@@ -1,12 +1,13 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Users;
 
-public sealed record CreateUserRequest(string Username, string Password, string Email);
+public sealed record CreateUserRequest(string Username, string Password, string Email, List<Guid> Roles);
 
 public sealed record CreateUserResponse(Guid Id, string Username);
 
@@ -29,7 +30,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
     public override async Task HandleAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
         var usernameExists = await _context.Users
-            .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: cancellationToken) 
+                .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: cancellationToken)
             is not null;
 
         if (usernameExists)
@@ -44,6 +45,19 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
 
+        var userRoles = request.Roles.Select(roleId => new UserRole
+        {
+            RoleId = roleId,
+            UserId = user.Id
+        }).ToList();
+
+        _context.UserRoles.AddRange(userRoles);
+        
+        var userRolesResult = await _context.SaveChangesAsync(cancellationToken);
+        
+        if (userRolesResult == 0)
+            ThrowError(ErrorMessages.SavingError);
+
         await SendAsync(new CreateUserResponse(user.Id, user.UserName), cancellation: cancellationToken);
     }
 }
@@ -55,5 +69,6 @@ public sealed class CreateUserValidator : Validator<CreateUserRequest>
         RuleFor(x => x.Username).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.Password).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.Email).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Roles).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

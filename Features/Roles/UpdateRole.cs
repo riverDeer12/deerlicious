@@ -62,6 +62,7 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
 
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
+        
 
         await SendAsync(new UpdateRoleResponse(role.Id, role.Name, role.Description), cancellation: cancellationToken);
     }
