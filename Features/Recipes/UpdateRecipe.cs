@@ -1,12 +1,13 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
+using Deerlicious.API.Database.Entities;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Recipes;
 
-public sealed record UpdateRecipeRequest(string Title, string Content);
+public sealed record UpdateRecipeRequest(string Title, string Content, List<Guid> Categories);
 
 public sealed record UpdateRecipeResponse(Guid Id, string Title);
 
@@ -22,7 +23,7 @@ public sealed class UpdateRecipeEndpoint : Endpoint<UpdateRecipeRequest, UpdateR
     public override void Configure()
     {
         Put("api/recipes/{id}");
-        Roles(nameof(UserPermissions.CanUpdateRecipe));
+        Permissions(nameof(UserPermissions.CanUpdateRecipe));
         Options(x => x.WithTags("Recipes"));
     }
 
@@ -39,6 +40,17 @@ public sealed class UpdateRecipeEndpoint : Endpoint<UpdateRecipeRequest, UpdateR
 
         recipe.Title = request.Title;
         recipe.Content = request.Content;
+        
+        recipe.Categories = new List<RecipeCategory>(
+            request.Categories.Select(categoryId => new RecipeCategory
+            {
+                CategoryId = categoryId,
+                RecipeId = recipe.Id
+            }));
+        
+        await _context.RecipeCategories
+            .Where(recipeCategory => recipeCategory.RecipeId == recipe.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
         _context.Recipes.Update(recipe);
 
@@ -57,5 +69,6 @@ public sealed class UpdateRecipeValidator : Validator<UpdateRecipeRequest>
     {
         RuleFor(x => x.Title).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.Content).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Categories).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }

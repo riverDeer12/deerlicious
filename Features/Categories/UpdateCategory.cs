@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Categories;
 
-public sealed record UpdateCategoryRequest(string Name, string Description);
+public sealed record UpdateCategoryRequest(string Name, string Description, List<Guid> Recipes);
 
 public sealed record UpdateCategoryResponse(Guid Id, string Name, string Description);
 
@@ -56,6 +56,20 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
 
         category.Name = request.Name;
         category.Description = request.Description;
+
+        if (request.Recipes.Count > 0)
+        {
+            await _context.RecipeCategories
+                .Where(recipeCategory => recipeCategory.CategoryId == category.Id)
+                .ExecuteDeleteAsync(cancellationToken);
+            
+            category.Recipes = new List<RecipeCategory>(
+                request.Recipes.Select(recipeId => new RecipeCategory
+                {
+                    CategoryId = category.Id,
+                    RecipeId = recipeId
+                }));
+        }
 
         _context.Categories.Update(category);
 

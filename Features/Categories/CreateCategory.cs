@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace Deerlicious.API.Features.Categories;
 
-public sealed record CreateCategoryRequest(string Name, string Description);
+public sealed record CreateCategoryRequest(string Name, string Description, List<Guid> Recipes);
 
 public sealed record CreateCategoryResponse(Guid Id, string Name, string Description);
 
@@ -36,7 +36,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
         if (!isCategoryUnique)
         {
-            await SendAsync(new CreateCategoryResponse(similarCategory.Id, similarCategory.Name, 
+            await SendAsync(new CreateCategoryResponse(similarCategory.Id, similarCategory.Name,
                     similarCategory.Description),
                 cancellation: cancellationToken);
             return;
@@ -50,6 +50,16 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
+        
+        if (request.Recipes.Count > 0)
+        {
+            newCategory.Recipes = new List<RecipeCategory>(
+                request.Recipes.Select(recipeId => new RecipeCategory
+                {
+                    CategoryId = newCategory.Id,
+                    RecipeId = recipeId
+                }));
+        }
 
         await SendAsync(new CreateCategoryResponse(newCategory.Id, newCategory.Name, newCategory.Description),
             cancellation: cancellationToken);

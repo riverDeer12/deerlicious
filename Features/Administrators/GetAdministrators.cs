@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Deerlicious.API.Features.Administrators;
 
 public sealed record GetAdministratorResponse(
+    Guid Id,
     string FirstName,
     string LastName,
     DateTimeOffset CreatedAt,
@@ -39,7 +40,8 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
         }
 
         await SendAsync(administrators
-            .Select(x => new GetAdministratorResponse(x.FirstName, x.LastName, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
+            .Select(x =>
+                new GetAdministratorResponse(x.Id, x.FirstName, x.LastName, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
             .ToList(), cancellation: cancellationToken);
     }
 }

@@ -14,7 +14,10 @@ public sealed record CreateRoleRequest(
     List<Guid> Permissions,
     List<Guid> Users);
 
-public sealed record CreateRoleResponse(Guid Id, string Name, string Description);
+public sealed record CreateRoleResponse(
+    Guid Id,
+    string Name,
+    string Description);
 
 public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleResponse>
 {
@@ -48,7 +51,7 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
             RoleId = newRole.Id,
             PermissionId = permissionId
         }).ToList();
-        
+
         var roleUsers = request.Users.Select(userId => new UserRole
         {
             RoleId = newRole.Id,
@@ -56,9 +59,9 @@ public sealed class CreateRoleEndpoint : Endpoint<CreateRoleRequest, CreateRoleR
         }).ToList();
 
         _context.RolePermissions.AddRange(rolePermissions);
-        
+
         _context.UserRoles.AddRange(roleUsers);
-        
+
         var relationsResult = await _context.SaveChangesAsync(cancellationToken);
 
         if (relationsResult == 0)

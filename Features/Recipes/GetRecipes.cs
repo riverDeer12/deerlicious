@@ -11,7 +11,12 @@ public sealed record GetRecipeResponse(
     string Content,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    bool IsDeleted);
+    bool IsDeleted,
+    List<RecipeCategoryDto> Categories);
+
+public sealed record RecipeCategoryDto(
+    Guid Id,
+    string Name);
 
 public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>>
 {
@@ -31,7 +36,9 @@ public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var recipes = await _context.Recipes.ToListAsync(cancellationToken: cancellationToken);
+        var recipes = await _context.Recipes.Include(recipe => recipe.Categories)
+            .ThenInclude(recipeCategory => recipeCategory.Category)
+            .ToListAsync(cancellationToken: cancellationToken);
 
         if (recipes.Count is 0)
         {
@@ -39,8 +46,23 @@ public class GetRecipesEndpoint : EndpointWithoutRequest<List<GetRecipeResponse>
             return;
         }
 
-        await SendAsync(recipes
-            .Select(x => new GetRecipeResponse(x.Id, x.Title, x.Content, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
-            .ToList(), cancellation: cancellationToken);
+        var response = new List<GetRecipeResponse>();
+
+        foreach (var recipe in recipes)
+        {
+            var recipeCategories = recipe.Categories.Select(x => x.Category).ToList();
+
+            var categoriesResponse = recipeCategories
+                .Select(x => new RecipeCategoryDto(x.Id, x.Name))
+                .ToList();
+
+            var roleResponse = new GetRecipeResponse(recipe.Id, recipe.Title, recipe.Content, recipe.CreatedAt,
+                recipe.UpdatedAt,
+                recipe.IsDeleted, categoriesResponse);
+
+            response.Add(roleResponse);
+        }
+
+        await SendAsync(response, cancellation: cancellationToken);
     }
 }

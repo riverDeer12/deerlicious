@@ -11,7 +11,8 @@ namespace Deerlicious.API.Features.Roles;
 public sealed record UpdateRoleRequest(
     string Name,
     string Description,
-    List<Guid> Permissions);
+    List<Guid> Permissions,
+    List<Guid> Users);
 
 public sealed record UpdateRoleResponse(Guid Id, string FullName, string Description);
 
@@ -44,16 +45,26 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
 
         role.Name = request.Name;
         role.Description = request.Description;
-        
+
         role.Permissions = new List<RolePermission>(
             request.Permissions.Select(permissionId => new RolePermission
             {
                 RoleId = role.Id,
                 PermissionId = permissionId
             }));
-        
         await _context.RolePermissions
             .Where(rolePermission => rolePermission.RoleId == role.Id)
+            .ExecuteDeleteAsync(cancellationToken);
+        
+        role.Users = new List<UserRole>(
+            request.Users.Select(userId => new UserRole
+            {
+                RoleId = role.Id,
+                UserId = userId
+            }));
+        
+        await _context.UserRoles
+            .Where(userRole => userRole.RoleId == role.Id)
             .ExecuteDeleteAsync(cancellationToken);
 
         _context.Roles.Update(role);
@@ -62,7 +73,6 @@ public class UpdateRoleEndpoint : Endpoint<UpdateRoleRequest, UpdateRoleResponse
 
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
-        
 
         await SendAsync(new UpdateRoleResponse(role.Id, role.Name, role.Description), cancellation: cancellationToken);
     }
@@ -73,5 +83,8 @@ public sealed class UpdateRoleValidator : Validator<UpdateRoleRequest>
     public UpdateRoleValidator()
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Description).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Permissions).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.Users).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }
