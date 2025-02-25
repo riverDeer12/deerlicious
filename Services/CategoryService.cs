@@ -26,6 +26,5 @@ public class CategoryService : ICategoryService
         category = similarCategory;
 
         return false;
-
     }
 }

@@ -11,7 +11,10 @@ public sealed record GetAdministratorResponse(
     string LastName,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
-    bool IsDeleted);
+    bool IsDeleted,
+    AdminUserDto User);
+
+public sealed record AdminUserDto(Guid Id, string Username, string Email);
 
 public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetAdministratorResponse>>
 {
@@ -31,7 +34,8 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var administrators = await _context.Administrators.ToListAsync(cancellationToken: cancellationToken);
+        var administrators = await _context.Administrators.Include(userType => userType.User)
+            .ToListAsync(cancellationToken: cancellationToken);
 
         if (administrators.Count is 0)
         {
@@ -39,9 +43,25 @@ public sealed class GetAdministratorsEndpoint : EndpointWithoutRequest<List<GetA
             return;
         }
 
-        await SendAsync(administrators
-            .Select(x =>
-                new GetAdministratorResponse(x.Id, x.FirstName, x.LastName, x.CreatedAt, x.UpdatedAt, x.IsDeleted))
-            .ToList(), cancellation: cancellationToken);
+        var response = new List<GetAdministratorResponse>();
+
+        foreach (var administrator in administrators)
+        {
+            var adminUser = administrator.User;
+
+            if (adminUser == null) continue;
+            
+            var adminUserResponse = new AdminUserDto(adminUser.Id, adminUser.UserName, adminUser.Email);
+
+            var roleResponse = new GetAdministratorResponse(administrator.Id, 
+                administrator.FirstName, administrator.LastName,
+                administrator.CreatedAt,
+                administrator.UpdatedAt,
+                administrator.IsDeleted, adminUserResponse);
+
+            response.Add(roleResponse);
+        }
+
+        await SendAsync(response, cancellation: cancellationToken);
     }
 }

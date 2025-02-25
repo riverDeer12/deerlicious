@@ -1,6 +1,7 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
+using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ public sealed record UpdateUserResponse(Guid Id, string Username);
 public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserResponse>
 {
     private readonly DeerliciousContext _context;
+    private readonly IUserService _userService;
 
-    public UpdateUserEndpoint(DeerliciousContext context)
+    public UpdateUserEndpoint(DeerliciousContext context, IUserService userService)
     {
         _context = context;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -38,6 +41,10 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
             ThrowError(ErrorMessages.NotFound);
 
         user.Email = request.Email;
+        
+        if (await _userService.UsernameExists(request.Username, cancellationToken))
+            ThrowError(ValidationMessages.UsernameAlreadyExists);
+        
         user.UserName = request.Username;
 
         user.Roles = new List<UserRole>(

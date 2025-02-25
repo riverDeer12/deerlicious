@@ -1,9 +1,10 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
+using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Deerlicious.API.Features.Users;
 
@@ -14,10 +15,12 @@ public sealed record CreateUserResponse(Guid Id, string Username);
 public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserResponse>
 {
     private readonly DeerliciousContext _context;
+    private readonly IUserService _userService;
 
-    public CreateUserEndpoint(DeerliciousContext context)
+    public CreateUserEndpoint(DeerliciousContext context, IUserService userService)
     {
         _context = context;
+        _userService = userService;
     }
 
     public override void Configure()
@@ -29,11 +32,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
     public override async Task HandleAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var usernameExists = await _context.Users
-                .FirstOrDefaultAsync(x => x.UserName == request.Username, cancellationToken: cancellationToken)
-            is not null;
-
-        if (usernameExists)
+        if (await _userService.UsernameExists(request.Username, cancellationToken))
             ThrowError(ValidationMessages.UsernameAlreadyExists);
 
         var user = Database.Entities.User.Init(request.Username, request.Password, request.Email);
