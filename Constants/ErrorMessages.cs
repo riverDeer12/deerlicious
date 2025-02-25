@@ -1,3 +1,5 @@
+using FluentValidation.Results;
+
 namespace Deerlicious.API.Constants;
 
 public static class ErrorMessages
@@ -7,4 +9,5 @@ public static class ErrorMessages
     public const string RolesNotProvided = nameof(RolesNotProvided);
     public const string SavingError = nameof(SavingError);
     public const string UnauthorizedAction = nameof(UnauthorizedAction);
+    public const string AlreadyExists = nameof(UnauthorizedAction);
 }

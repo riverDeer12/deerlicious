@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Administrators;
 
-public sealed record CreateAdministratorRequest(Guid UserId, string FirstName, string LastName);
+public sealed record CreateAdministratorRequest(Guid User, string FirstName, string LastName);
+
 public sealed record CreateAdministratorResponse(Guid Id, string FullName);
 
 public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRequest, CreateAdministratorResponse>
@@ -28,10 +29,15 @@ public sealed class CreateAdministratorEndpoint : Endpoint<CreateAdministratorRe
 
     public override async Task HandleAsync(CreateAdministratorRequest request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.User, cancellationToken);
 
         if (user is null)
             ThrowError(ErrorMessages.NotFound);
+
+        var administratorExists = _context.Administrators.Any(x => x.UserId == user.Id);
+
+        if (administratorExists)
+            ThrowError(ErrorMessages.AlreadyExists);
 
         var newAdministrator = Administrator.Init(user, request.FirstName, request.LastName);
 
@@ -53,6 +59,6 @@ public sealed class CreateAdministratorValidator : Validator<CreateAdministrator
     {
         RuleFor(x => x.FirstName).NotEmpty().WithMessage(ValidationMessages.Required);
         RuleFor(x => x.LastName).NotEmpty().WithMessage(ValidationMessages.Required);
-        RuleFor(x => x.UserId).NotEmpty().WithMessage(ValidationMessages.Required);
+        RuleFor(x => x.User).NotEmpty().WithMessage(ValidationMessages.Required);
     }
 }
