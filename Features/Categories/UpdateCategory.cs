@@ -43,33 +43,26 @@ public sealed class UpdateCategoryEndpoint : Endpoint<UpdateCategoryRequest, Upd
         if (category is null)
             ThrowError(ErrorMessages.NotFound);
         
+        var categoryChanged = request.Name != category.Name;
+        
+        var categoryExists = await _categoryService.CategoryNameExists(request.Name, cancellationToken);
 
-        var isCategoryUnique = _categoryService.IsCategoryUnique(request.Name, out var similarCategory);
-
-        if (!isCategoryUnique)
-        {
-            await SendAsync(new UpdateCategoryResponse(similarCategory.Id, similarCategory.Name, 
-                    similarCategory.Description),
-                cancellation: cancellationToken);
-            return;
-        }
-
+        if (categoryChanged && categoryExists)
+            ThrowError(ErrorMessages.AlreadyExists);
+        
         category.Name = request.Name;
         category.Description = request.Description;
 
-        if (request.Recipes.Count > 0)
-        {
-            await _context.RecipeCategories
-                .Where(recipeCategory => recipeCategory.CategoryId == category.Id)
-                .ExecuteDeleteAsync(cancellationToken);
-            
-            category.Recipes = new List<RecipeCategory>(
-                request.Recipes.Select(recipeId => new RecipeCategory
-                {
-                    CategoryId = category.Id,
-                    RecipeId = recipeId
-                }));
-        }
+        category.Recipes = new List<RecipeCategory>(
+            request.Recipes.Select(recipeId => new RecipeCategory
+            {
+                CategoryId = category.Id,
+                RecipeId = recipeId
+            }));
+
+        await _context.RecipeCategories
+            .Where(recipeCategory => recipeCategory.CategoryId == category.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
         _context.Categories.Update(category);
 

@@ -1,5 +1,6 @@
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Services;
 
@@ -12,19 +13,9 @@ public class CategoryService : ICategoryService
         _context = context;
     }
 
-    public bool IsCategoryUnique(string name, out Category category)
+    public async Task<bool> CategoryNameExists(string name, CancellationToken cancellationToken)
     {
-        var similarCategory = _context.Categories.FirstOrDefault(x => x.Name == name);
-
-        if (similarCategory is null)
-        {
-            category = null!;
-            
-            return true;
-        }
-
-        category = similarCategory;
-
-        return false;
+        return await _context.Categories
+            .AnyAsync(x => x.Name == name, cancellationToken);
     }
 }

@@ -32,15 +32,8 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
     public override async Task HandleAsync(CreateCategoryRequest request, CancellationToken cancellationToken)
     {
-        var isCategoryUnique = _categoryService.IsCategoryUnique(request.Name, out var similarCategory);
-
-        if (!isCategoryUnique)
-        {
-            await SendAsync(new CreateCategoryResponse(similarCategory.Id, similarCategory.Name,
-                    similarCategory.Description),
-                cancellation: cancellationToken);
-            return;
-        }
+        if (await _categoryService.CategoryNameExists(request.Name, cancellationToken))
+            ThrowError(ErrorMessages.AlreadyExists);
 
         var newCategory = Category.Init(request.Name, request.Description);
 
@@ -50,7 +43,7 @@ public sealed class CreateCategoryEndpoint : Endpoint<CreateCategoryRequest, Cre
 
         if (result == 0)
             ThrowError(ErrorMessages.SavingError);
-        
+
         if (request.Recipes.Count > 0)
         {
             newCategory.Recipes = new List<RecipeCategory>(
