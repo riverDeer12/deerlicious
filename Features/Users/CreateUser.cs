@@ -5,7 +5,6 @@ using Deerlicious.API.Services;
 using FastEndpoints;
 using FluentValidation;
 
-
 namespace Deerlicious.API.Features.Users;
 
 public sealed record CreateUserRequest(string Username, string Password, string Email, List<Guid> Roles);
