@@ -41,8 +41,10 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
             ThrowError(ErrorMessages.NotFound);
 
         user.Email = request.Email;
+
+        var usernameChanged = user.UserName != request.Username;
         
-        if (await _userService.UsernameExists(request.Username, cancellationToken))
+        if (usernameChanged && await _userService.UsernameExists(request.Username, cancellationToken))
             ThrowError(ValidationMessages.UsernameAlreadyExists);
         
         user.UserName = request.Username;
