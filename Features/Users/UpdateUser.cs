@@ -26,7 +26,7 @@ public sealed class UpdateUserEndpoint : Endpoint<UpdateUserRequest, UpdateUserR
     public override void Configure()
     {
         Put("api/users/{id}");
-        Roles(SeedData.SuperAdminRoleName);
+        Permissions(nameof(UserPermissions.CanUpdateUser));
         Options(x => x.WithTags("Users"));
     }
 

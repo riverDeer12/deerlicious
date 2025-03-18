@@ -25,7 +25,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
     public override void Configure()
     {
         Post("api/users");
-        Roles(SeedData.SuperAdminRoleName);
+        Permissions(nameof(UserPermissions.CanCreateUser));
         Options(x => x.WithTags("Users"));
     }
 

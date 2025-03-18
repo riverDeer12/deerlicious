@@ -76,6 +76,26 @@ public static class UserPermissions
         Permission.Init("c02b2833-ded9-4e6b-af6a-74a06cb2ffe0", nameof(CanDeleteCategory),
             "Allows deleting recipe category.",
             "Categories");
+    
+    public static readonly Permission CanGetUsers =
+        Permission.Init("fa6a2e89-cf1e-4e4c-bd3a-c95365c52f81", nameof(CanGetUsers),
+            "Allows viewing users.",
+            "Users");
+
+    public static readonly Permission CanCreateUser =
+        Permission.Init("a4e62d67-676d-4f53-9ace-b4c600ea9718", nameof(CanCreateUser),
+            "Allows creating user.",
+            "Users");
+
+    public static readonly Permission CanUpdateUser =
+        Permission.Init("2fe1ad9e-4229-411f-8095-e8f289777455", nameof(CanUpdateUser),
+            "Allows updating user.",
+            "Users");
+
+    public static readonly Permission CanDeleteUser =
+        Permission.Init("f250b493-7826-4a43-968f-d1392d925b96", nameof(CanDeleteUser),
+            "Allows deleting user.",
+            "Users");
 
 
     public static List<Permission> GetUserPermissions()
