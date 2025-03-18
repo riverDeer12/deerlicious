@@ -22,7 +22,7 @@ public class UpdateAdministratorEndpoint : Endpoint<UpdateAdministratorRequest, 
     public override void Configure()
     {
         Put("api/administrators/{id}");
-        Roles(SeedData.SuperAdminRoleName);
+        Permissions(nameof(UserPermissions.CanUpdateAdministrator));
         Options(x => x.WithTags("Administrators"));
     }
 

@@ -5,6 +5,26 @@ namespace Deerlicious.API.Constants;
 
 public static class UserPermissions
 {
+    public static readonly Permission CanGetAdministrators =
+        Permission.Init("3808be7c-782b-4fcf-8d2b-b9cd3a2bb8ee", nameof(CanGetAdministrators),
+            "Allows viewing administrators.",
+            "Administrators");
+
+    public static readonly Permission CanCreateAdministrator =
+        Permission.Init("d7775310-c4ff-4fd4-bf3b-719d85b60b4c", nameof(CanCreateAdministrator),
+            "Allows creating administrator.",
+            "Administrators");
+
+    public static readonly Permission CanUpdateAdministrator =
+        Permission.Init("5bdaa142-aae1-4225-8e8e-2539e74bd616", nameof(CanUpdateAdministrator),
+            "Allows updating administrator.",
+            "Administrators");
+
+    public static readonly Permission CanDeleteAdministrator =
+        Permission.Init("2070c041-997a-43d6-8a01-ba04c8f1b1ed", nameof(CanDeleteAdministrator),
+            "Allows deleting administrator.",
+            "Administrators");
+    
     public static readonly Permission CanGetContributors =
         Permission.Init("c9b1e9a7-8bb0-4c29-86db-cbb4389e6393", nameof(CanGetContributors),
             "Allows viewing contributors.", "Contributors");
