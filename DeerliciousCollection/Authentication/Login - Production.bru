@@ -1,0 +1,18 @@
+meta {
+  name: Login - Production
+  type: http
+  seq: 2
+}
+
+post {
+  url: deerlicious.com/api/authentication/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "superadmin",
+    "password": "superAdmin123#"
+  }
+}

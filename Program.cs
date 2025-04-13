@@ -52,6 +52,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
+
+app.MapFallbackToFile("index.html");
+
 app.UseSerilogRequestLogging();
 
 app.UseMiddleware<AdditionalRequestLogging>();
