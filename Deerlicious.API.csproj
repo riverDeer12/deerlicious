@@ -27,4 +27,10 @@
       <Folder Include="Logs\" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="wwwroot\index.html">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
 </Project>
