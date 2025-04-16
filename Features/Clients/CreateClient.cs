@@ -1,11 +1,8 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
-using Deerlicious.API.Features.Administrators;
-using Deerlicious.API.Features.Categories;
 using Deerlicious.API.Services;
 using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Features.Clients;
 
