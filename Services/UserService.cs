@@ -15,22 +15,22 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<CreateUserResponse> CreateUserAccount(CreateUserRequest request,
+    public async Task<User> CreateUserAccount(string username, string password, string email,
         CancellationToken cancellationToken)
     {
-        if (await UsernameExists(request.Username, cancellationToken))
-            ThrowError(ValidationMessages.UsernameAlreadyExists);
-
-        var user = User.Init(request.Username, request.Password, request.Email);
+        if (await UsernameExists(username, cancellationToken))
+            throw new Exception(ValidationMessages.UsernameAlreadyExists);
+        
+        var user = User.Init(username, password, email);
 
         _context.Users.Add(user);
 
         var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result == 0)
-            ThrowError(ErrorMessages.SavingError);
+            throw new Exception(ErrorMessages.SavingError);
 
-        return new CreateUserResponse(user.Id, user.UserName);
+        return user;
     }
 
     public async Task<bool> UsernameExists(string username, CancellationToken cancellationToken)

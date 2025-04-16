@@ -25,7 +25,7 @@ public record CreateClientResponse(
 public class CreateClientEndpoint : Endpoint<CreateClientRequest, CreateClientResponse>
 {
     private readonly DeerliciousContext _context;
-    public readonly IUserService _userService;
+    private readonly IUserService _userService;
 
     public CreateClientEndpoint(DeerliciousContext context, IUserService userService)
     {
@@ -42,15 +42,15 @@ public class CreateClientEndpoint : Endpoint<CreateClientRequest, CreateClientRe
 
     public override async Task HandleAsync(CreateClientRequest request, CancellationToken cancellationToken)
     {
-        var userAccount = await _userService.CreateUserAccount(request, request.Password);
-
-        if (userAccount is null)
-            ThrowError(ErrorMessages.NotFound);
+        var userAccount =
+            await _userService.CreateUserAccount(request.Username, request.Password, request.Username,
+                cancellationToken);
 
         var newClient = new Client
         {
             FirstName = request.FirstName,
-            LastName = request.LastName
+            LastName = request.LastName,
+            User = userAccount
         };
 
         _context.Clients.Add(newClient);
