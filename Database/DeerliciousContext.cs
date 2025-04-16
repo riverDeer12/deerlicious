@@ -17,6 +17,7 @@ public class DeerliciousContext : DbContext
     
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Client> Clients { get; set; }
     public DbSet<Contributor> Contributors { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<Recipe> Recipes { get; set; }

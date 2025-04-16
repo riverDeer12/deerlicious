@@ -96,6 +96,26 @@ public static class UserPermissions
         Permission.Init("f250b493-7826-4a43-968f-d1392d925b96", nameof(CanDeleteUser),
             "Allows deleting user.",
             "Users");
+    
+    public static readonly Permission CanGetClients =
+        Permission.Init("17ef9141-208a-491a-9cb7-84d4f8375fb9", nameof(CanGetClients),
+            "Allows viewing clients.",
+            "Clients");
+
+    public static readonly Permission CanCreateClient =
+        Permission.Init("28ab969b-c866-470f-b3b4-7c1f1b066a48", nameof(CanCreateClient),
+            "Allows creating client.",
+            "Clients");
+
+    public static readonly Permission CanUpdateClient =
+        Permission.Init("718efa10-761a-4e44-8eda-eae6db4cb0a3", nameof(CanUpdateClient),
+            "Allows updating client.",
+            "Clients");
+
+    public static readonly Permission CanDeleteClient =
+        Permission.Init("b22c672f-6d69-4674-b9cd-5fbb8d497e7a", nameof(CanDeleteClient),
+            "Allows deleting client.",
+            "Clients");
 
 
     public static List<Permission> GetUserPermissions()

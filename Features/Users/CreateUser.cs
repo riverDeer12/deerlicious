@@ -31,32 +31,22 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, CreateUserR
 
     public override async Task HandleAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-        if (await _userService.UsernameExists(request.Username, cancellationToken))
-            ThrowError(ValidationMessages.UsernameAlreadyExists);
-
-        var user = Database.Entities.User.Init(request.Username, request.Password, request.Email);
-
-        _context.Users.Add(user);
-
-        var result = await _context.SaveChangesAsync(cancellationToken);
-
-        if (result == 0)
-            ThrowError(ErrorMessages.SavingError);
+        var userAccount = await _userService.CreateUserAccount(request, cancellationToken);
 
         var userRoles = request.Roles.Select(roleId => new UserRole
         {
             RoleId = roleId,
-            UserId = user.Id
+            UserId = userAccount.Id
         }).ToList();
 
         _context.UserRoles.AddRange(userRoles);
-        
+
         var userRolesResult = await _context.SaveChangesAsync(cancellationToken);
-        
+
         if (userRolesResult == 0)
             ThrowError(ErrorMessages.SavingError);
 
-        await SendAsync(new CreateUserResponse(user.Id, user.UserName), cancellation: cancellationToken);
+        await SendAsync(new CreateUserResponse(userAccount.Id, userAccount.Username), cancellation: cancellationToken);
     }
 }
 

@@ -1,5 +1,4 @@
 using Deerlicious.API.Database;
-using Deerlicious.API.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Services;
