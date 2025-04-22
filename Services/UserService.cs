@@ -1,7 +1,6 @@
 using Deerlicious.API.Constants;
 using Deerlicious.API.Database;
 using Deerlicious.API.Database.Entities;
-using Deerlicious.API.Features.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deerlicious.API.Services;
